@@ -1,0 +1,8 @@
+body {
+  margin: 0;
+  background-color: #1a1b22;
+  font-family: 'Nunito-Regular';
+  color: aliceblue;
+  box-sizing: border-box;
+  height: 100vh;
+}

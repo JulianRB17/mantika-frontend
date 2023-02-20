@@ -1,0 +1,80 @@
+.presentation {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-items: center;
+  background-color: black;
+  margin: 70px auto;
+  border-radius: 10px;
+  width: 80%;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+  outline: 2px solid aliceblue;
+}
+
+.presentation__profile-img {
+  position: relative;
+  margin-top: 50px;
+  width: 30%;
+  object-fit: cover;
+  border-radius: 10px 100px / 120px;
+}
+
+.presentation__info-container {
+  width: 80%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.presentation__info-element {
+  display: flex;
+  padding: 15px 0;
+  margin-left: 10%;
+}
+
+.presentation__info-key {
+  margin: 0;
+  font-size: 30px;
+  line-height: 35px;
+}
+
+.presentation__info-value {
+  margin: 0 0 0 30px;
+  font-size: 25px;
+  line-height: 37px;
+}
+
+.presentation__input {
+  background-color: rgba(26, 27, 34, 1);
+  color: aliceblue;
+  border-radius: 5px;
+  width: fit-content;
+  min-width: 150px;
+}
+
+.presentation__input_large {
+  height: 150px;
+}
+
+.presentation__input::placeholder {
+  color: gray;
+}
+
+.presentation__input:focus {
+  outline: 5px groove rgba(0, 145, 175, 1);
+}
+
+.presentation__submit-btn {
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: aliceblue;
+  background-color: rgb(52, 14, 156);
+  text-shadow: none;
+  box-shadow: 0 0 10px 1px rgba(26, 27, 34, 1);
+  margin: 20px auto 30px;
+  height: 40px;
+  width: 40%;
+}
