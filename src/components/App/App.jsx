@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header isLoggedIn={true} username="El Julis" />
       <Routes>
         <Route
           path="/"
@@ -42,9 +42,9 @@ function App() {
             <>
               <Form
                 inputs={[
-                  { name: 'username', type: 'text', title: 'userName' },
-                  { name: 'email', type: 'email', title: 'email' },
-                  { name: 'password', type: 'password', title: 'password' },
+                  { name: 'username', type: 'text', title: 'Username' },
+                  { name: 'email', type: 'email', title: 'Email' },
+                  { name: 'password', type: 'password', title: 'Password' },
                   { name: 'discipline', type: 'text', title: 'Discipline' },
                 ]}
                 formName="Register"
@@ -55,7 +55,7 @@ function App() {
           }
         />
         <Route
-          path="login"
+          path="/login"
           element={
             <>
               <Form

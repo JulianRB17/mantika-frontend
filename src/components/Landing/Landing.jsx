@@ -10,7 +10,7 @@ export default function landing() {
         src={logo}
         alt="Mantika logo"
       />
-      <h1 className="landing__title landing__animation">M a n t i k a</h1>
+      <h1 className="landing__title landing__animation">Mantika</h1>
       <h2 className="landing__subtitle landing__animation">
         A place to share your creative experience.
       </h2>

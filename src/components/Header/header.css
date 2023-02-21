@@ -32,4 +32,23 @@
   margin: 0;
   padding-left: 10px;
   font-size: 25px;
+  letter-spacing: 7px;
+}
+
+@media screen and (max-width: 650px) {
+  .header__title {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .header {
+    height: 65px;
+  }
+}
+
+@media screen and (max-width: 315px) {
+  .header__logo {
+    display: none;
+  }
 }

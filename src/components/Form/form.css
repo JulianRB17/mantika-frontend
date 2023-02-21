@@ -77,3 +77,9 @@
   height: 40px;
   width: 40%;
 }
+
+@media screen and (max-width: 400px) {
+  .form__title {
+    font-size: 25px;
+  }
+}
