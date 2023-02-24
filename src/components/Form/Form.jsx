@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Form(props) {
-  const { formName, inputs, submitText, title } = props;
+  const { formName, inputs, submitText, onSubmit } = props;
   const disciplines = [
     'theater',
     'contemporary dance',
@@ -26,17 +26,23 @@ export default function Form(props) {
     'installation and conceptual art',
   ];
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSubmit();
+  }
+
   const inputRender = function () {
     return inputs.map((input) => {
-      if (input.name === 'Discipline') {
+      if (input.name === 'discipline') {
         return (
           <div className="form__input-container" key={inputs.indexOf(input)}>
-            <p className="form__input-descrption">Discipline</p>
+            <p className="form__input-descrption">{input.title}</p>
             <select
               required
               className="form__input"
               name="discipline"
               key={inputs.indexOf(input)}
+              onChange={input.onChange}
               //   defaultValue="-- select an option --"
               //   value="-- select an option --"
               //   placeholder="-- select an option --"
@@ -64,26 +70,33 @@ export default function Form(props) {
             <p className="form__input-descrption">{input.title}</p>
             <textarea
               required
-              className={`form__input ${input.modifier}`}
+              className={
+                input.modifier ? `form__input ${input.modifier}` : 'form__input'
+              }
               name={input.name}
               placeholder={input.title}
               type={input.type}
+              onChange={input.onChange}
             ></textarea>
           </div>
         );
-      } else
+      } else {
         return (
           <div className="form__input-container" key={inputs.indexOf(input)}>
             <p className="form__input-descrption">{input.title}</p>
             <input
               required
-              className="form__input"
+              className={
+                input.modifier ? `form__input ${input.modifier}` : 'form__input'
+              }
               name={input.name}
               placeholder={input.title}
               type={input.type}
+              onChange={input.onChange}
             ></input>
           </div>
         );
+      }
     });
   };
 
@@ -92,7 +105,9 @@ export default function Form(props) {
       <div className="form__overlay" />
       <h1 className="form__title">{formName}</h1>
       {inputRender()}
-      <button className="form__submit-btn">{submitText}</button>
+      <button className="form__submit-btn" onClick={handleSubmit}>
+        {submitText}
+      </button>
     </form>
   );
 }

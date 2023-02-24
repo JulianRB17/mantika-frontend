@@ -16,6 +16,7 @@
   text-decoration: none;
   color: aliceblue;
   padding: 5px;
+  max-width: 70px;
 }
 
 .navigation__searchbar {
@@ -42,15 +43,14 @@
   .navigation {
     width: 60%;
   }
+  .navigation__link {
+    font-size: 15px;
+  }
 }
 
 @media screen and (max-width: 650px) {
   .navigation {
     width: 85%;
-  }
-
-  .navigation__link {
-    font-size: 15px;
   }
 }
 

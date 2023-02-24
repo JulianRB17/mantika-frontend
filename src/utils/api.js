@@ -1,14 +1,12 @@
 class Api {
-  constructor(
-    options = {
+  constructor() {
+    this._baseUrl = '';
+    this._options = {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/plain, */*',
       },
-    }
-  ) {
-    this._baseUrl = '';
-    this._options = options;
+    };
   }
 
   _fetchData() {

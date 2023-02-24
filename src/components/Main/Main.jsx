@@ -68,21 +68,22 @@ const proyects = [
   },
 ];
 
-export default function Main() {
+export default function Main(props) {
+  const { text } = props;
+
   return (
     <section className="main">
       {proyects.map((proyect) => {
-        const { _id, img, name, discipline, creator, year, colaborators } =
-          proyect;
+        const { _id, img, name, discipline, creator, colaborators } = proyect;
         return (
           <Proyect
+            text={text}
             name={name}
             key={_id}
             img={img}
             id={_id}
             discipline={discipline}
             creator={creator}
-            year={year}
             colaborators={colaborators}
           />
         );

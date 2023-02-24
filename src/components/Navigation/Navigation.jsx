@@ -3,23 +3,16 @@ import { NavLink } from 'react-router-dom';
 import searchIcon from '../../images/search-icon.svg';
 
 export default function Navigation(props) {
-  const { isLoggedIn, username } = props;
-  const [searchInput, setSearchInput] = React.useState('');
+  const { isAuthorized, username, searchInput, onChange } = props;
 
-  const handleChange = (e) => {
-    e.preventDefault();
-    setSearchInput(e.target.value);
-  };
-
-  if (isLoggedIn) {
-    console.log(username);
+  if (isAuthorized) {
     return (
       <section className="navigation">
         <div className="navigation__searchbar-container">
           <input
             type="search"
             placeholder="Search proyect"
-            onChange={handleChange}
+            onChange={onChange}
             value={searchInput}
             className="navigation__searchbar"
           />

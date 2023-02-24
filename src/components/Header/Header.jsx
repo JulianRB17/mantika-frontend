@@ -4,7 +4,22 @@ import logo from '../../images/Logo.svg';
 import Navigation from '../Navigation/Navigation';
 
 export default function Header(props) {
-  const { isLoggedIn, username } = props;
+  const {
+    isAuthorized,
+    username,
+    onChange,
+    onLanguageChangeEn,
+    onLanguageChangeEs,
+  } = props;
+
+  function handleLanguageChangeEn(e) {
+    e.preventDefault();
+    onLanguageChangeEn();
+  }
+  function handleLanguageChangeEs(e) {
+    e.preventDefault();
+    onLanguageChangeEs();
+  }
 
   return (
     <section className="header">
@@ -12,7 +27,19 @@ export default function Header(props) {
         <img className="header__logo" src={logo} alt="logo" />
         <h1 className="header__title">Mantika</h1>
       </Link>
-      <Navigation isLoggedIn={isLoggedIn} username={username} />
+      <div className="header__btn-container">
+        <button onClick={handleLanguageChangeEn} className="header__btn">
+          EN
+        </button>
+        <button onClick={handleLanguageChangeEs} className="header__btn">
+          ES
+        </button>
+      </div>
+      <Navigation
+        isAuthorized={isAuthorized}
+        username={username}
+        onChange={onChange}
+      />
     </section>
   );
 }

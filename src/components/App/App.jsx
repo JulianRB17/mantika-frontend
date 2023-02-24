@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import Header from '../Header/Header';
 import Landing from '../Landing/Landing';
 import Form from '../Form/Form';
@@ -9,7 +9,11 @@ import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
 import Presentation from '../Presentation/Presentation';
 import BackgroundImg from '../BackgroundImg/BackgroundImg';
+import Preloader from '../Preloader/Preloader';
 import './app.css';
+import translationApi from '../../utils/translationApi';
+
+import { register, authorize, checkToken } from '../../utils/auth';
 
 import hiphopImg from '../../images/hip-hop-dance.jpg';
 import graffitiImg from '../../images/graffiti.jpg';
@@ -22,16 +26,128 @@ function App() {
   const { useState } = React;
   const [popupName, setPopupName] = useState('login');
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [jwt, setJwt] = useState('');
+  const [isAuthorized, setAuthorized] = useState(true);
+  const [searchInput, setSearchInput] = React.useState('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [userDiscipline, setUserDiscipline] = useState('');
+  const [description, setDescription] = useState('');
+  const [city, setCity] = useState('');
+  const [colaboratingInProyects, setcolaboratingInProyects] = useState('');
+  const [createdProyects, setCreatedProyects] = useState('');
+  const [currentUser, setCurrentUser] = useState('');
+  const [currentProyectName, setCurrentProyectName] = useState('');
+  const [currentProyectDescription, setCurrentProyectDescription] =
+    useState('');
+  const [currentProyectDiscipline, setCurrentProyectDiscipline] = useState('');
+  const [currentProyectCity, setCurrentProyectCity] = useState('');
+  const [isLoading, setLoading] = useState(false);
+  const [text, setText] = useState(translationApi.spanishObject);
+  const [translated, setTranslated] = useState(false);
+
+  const navigate = useNavigate();
+  const navigation = React.useRef(useNavigate());
+
+  function handleUserRegistration() {
+    setLoading(true);
+    register(username, email, password, userDiscipline)
+      .then((data) => {
+        console.log(data);
+        setLoading(false);
+        // if (data.token) {
+        //       localStorage.setItem('jwt', data.token);
+        //       setJwt(data.token);
+        // setPassword('');
+        // navigate('/home', { replace: true });
+        // setAuthorized(true);
+        // } else {
+        // throw new Error('Algo salió mal');
+        // }
+      })
+      .catch((err) => console.error(err));
+    // .finally(() => setPopupAuthOpen(true));
+  }
+
+  function handleLanguageChangeEn() {
+    if (!translated) {
+      setLoading(true);
+      translationApi.createTranslatedObject().then((englishText) => {
+        setText(englishText);
+      });
+      setLoading(false);
+      setTranslated(true);
+    }
+    if (translated) {
+      setText(translationApi.translatedObject);
+    }
+  }
+
+  function handleLanguageChangeEs() {
+    setText(translationApi.spanishObject);
+  }
+
+  function handleUsernameChange(e) {
+    setUsername(e.target.value);
+  }
+
+  function handlePasswordChange(e) {
+    setPassword(e.target.value);
+  }
+
+  function handleEmailChange(e) {
+    setEmail(e.target.value);
+  }
+
+  function handleDescriptionChange(e) {
+    setDescription(e.target.value);
+  }
+
+  function handleCityChange(e) {
+    setCity(e.target.value);
+  }
+
+  function handleUserDiscipline(e) {
+    setUserDiscipline(e.target.value);
+  }
+
+  function handleCurrentProyectDiscipline(e) {
+    setCurrentProyectDiscipline(e.target.value);
+  }
+
+  function handleCurrentProyectDescriptionChange(e) {
+    setCurrentProyectDescription(e.target.value);
+  }
+
+  function handleCurrentProyectNameChange(e) {
+    setCurrentProyectName(e.target.value);
+  }
+
+  function handleCurrentProyectCityChange(e) {
+    setCurrentProyectCity(e.target.value);
+  }
+
+  function handleSearchInputChange(e) {
+    setSearchInput(e.target.value);
+  }
 
   return (
     <div className="app">
-      <Header isLoggedIn={true} username="El Julis" />
+      <Header
+        isAuthorized={isAuthorized}
+        username={username}
+        onLanguageChangeEn={handleLanguageChangeEn}
+        onLanguageChangeEs={handleLanguageChangeEs}
+        onChange={handleSearchInputChange}
+      />
+      <Preloader isLoading={isLoading} />
       <Routes>
         <Route
           path="/"
           element={
             <>
-              <Landing />
+              <Landing text={text} />
               <BackgroundImg src={hiphopImg} />
             </>
           }
@@ -42,13 +158,34 @@ function App() {
             <>
               <Form
                 inputs={[
-                  { name: 'username', type: 'text', title: 'Username' },
-                  { name: 'email', type: 'email', title: 'Email' },
-                  { name: 'password', type: 'password', title: 'Password' },
-                  { name: 'discipline', type: 'text', title: 'Discipline' },
+                  {
+                    name: 'username',
+                    type: 'text',
+                    title: text.username,
+                    onChange: handleUsernameChange,
+                  },
+                  {
+                    name: 'email',
+                    type: 'email',
+                    title: 'Email',
+                    onChange: handleEmailChange,
+                  },
+                  {
+                    name: 'password',
+                    type: 'password',
+                    title: text.password,
+                    onChange: handlePasswordChange,
+                  },
+                  {
+                    name: 'discipline',
+                    type: 'text',
+                    title: text.discipline,
+                    onChange: handleUserDiscipline,
+                  },
                 ]}
                 formName="Register"
-                submitText="Register"
+                submitText={text.registerBtn}
+                onSubmit={handleUserRegistration}
               />
               <BackgroundImg src={graffitiImg} />
             </>
@@ -60,8 +197,18 @@ function App() {
             <>
               <Form
                 inputs={[
-                  { name: 'username', type: 'text', title: 'Username' },
-                  { name: 'password', type: 'password', title: 'Password' },
+                  {
+                    name: 'username',
+                    type: 'text',
+                    title: text.username,
+                    onChange: handleUsernameChange,
+                  },
+                  {
+                    name: 'password',
+                    type: 'password',
+                    title: text.password,
+                    onChange: handlePasswordChange,
+                  },
                 ]}
                 formName="Login"
                 submitText="Login"
@@ -74,7 +221,7 @@ function App() {
           path="/about"
           element={
             <>
-              <About />
+              <About text={text} />
               <BackgroundImg src={balletDancerImg} />
             </>
           }
@@ -83,8 +230,8 @@ function App() {
           path="/home"
           element={
             <>
-              <Sidebar />
-              <Main />
+              <Sidebar text={text} />
+              <Main text={text} />
             </>
           }
         />
@@ -95,25 +242,30 @@ function App() {
               <Presentation
                 elements={[
                   {
-                    key: 'Username:',
-                    value: 'El Julián',
+                    key: text.username,
+                    value: { username },
                     isInput: true,
+                    onChange: handleUsernameChange,
                   },
                   {
-                    key: 'Description:',
-                    value:
-                      'Un texto largo que me describe así bien locoshonamente',
+                    key: text.description,
+                    value: description,
                     modifier: 'presentation__input_large',
                     isInput: true,
                     isLarge: true,
+                    onChange: handleDescriptionChange,
                   },
                   {
-                    key: 'City:',
-                    value: 'La CDMX',
+                    key: text.city,
+                    value: city,
                     isInput: true,
+                    onChange: handleCityChange,
                   },
-                  { key: 'Created proyects:', value: 5 },
-                  { key: 'Colaborating in:', value: 3 },
+                  { key: text.createdProyects, value: createdProyects.length },
+                  {
+                    key: text.colaboratingIn,
+                    value: colaboratingInProyects.length,
+                  },
                 ]}
                 img={graffitiImg}
                 submitText="Edit"
@@ -126,21 +278,38 @@ function App() {
           path="/proyect/registration"
           element={
             <>
-              <Sidebar />
+              <Sidebar text={text} />
               <Form
                 img={graffitiImg}
                 inputs={[
-                  { name: 'proyectName', type: 'text', title: 'Proyect name' },
                   {
-                    name: 'description',
+                    name: 'proyectName',
+                    type: 'text',
+                    title: text.proyect,
+                    onChange: handleCurrentProyectNameChange,
+                  },
+                  {
+                    name: 'proyectDescription',
                     type: 'text',
                     modifier: 'form__input_large',
-                    title: 'Description',
+                    title: text.description,
+                    onChange: handleCurrentProyectDescriptionChange,
                   },
-                  { name: 'discipline', type: 'text', title: 'Discipline' },
+                  {
+                    name: 'proyectCity',
+                    type: 'text',
+                    title: text.city,
+                    onChange: handleCurrentProyectCityChange,
+                  },
+                  {
+                    name: 'proyectDiscipline',
+                    type: 'text',
+                    title: text.discipline,
+                    onChange: handleCurrentProyectDiscipline,
+                  },
                 ]}
                 formName="Create a new proyect"
-                submitText="Create"
+                submitText={text.createBtn}
               />
 
               <BackgroundImg src={brushImg} />
@@ -152,26 +321,26 @@ function App() {
           element={
             <>
               <Presentation
+                text={text}
                 img={balletDancerImg}
                 elements={[
                   {
-                    key: 'Proyect:',
-                    value: 'Los Obscenos de Silere/Vórtex',
+                    key: text.proyect,
+                    value: currentProyectName,
                   },
                   {
-                    key: 'Description:',
-                    value:
-                      'Una obra bien crazy que está así bien loka sobre vijes en el tiempo y así',
+                    key: text.description,
+                    value: currentProyectDescription,
                     modifier: 'presentation__input_large',
                     isLarge: true,
                   },
                   {
-                    key: 'City:',
-                    value: 'La CDMX',
+                    key: text.city,
+                    value: currentProyectCity,
                   },
-                  { key: 'Colaborators:', value: 30 },
+                  { key: text.colaborators, value: 30 },
                 ]}
-                submitText="Colaborate"
+                submitText={text.colaborateBtn}
               />
               <BackgroundImg src={balletDancerImg} />
             </>

@@ -5,3 +5,15 @@
   flex-wrap: wrap;
   justify-content: center;
 }
+
+@media screen and (max-width: 550px) {
+  .main {
+    padding-top: 75px;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .main {
+    padding: 75px 0 40px;
+  }
+}

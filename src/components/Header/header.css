@@ -35,6 +35,23 @@
   letter-spacing: 7px;
 }
 
+.header__btn-container {
+  display: flex;
+  align-items: center;
+  padding-left: 25px;
+}
+
+.header__btn {
+  background-color: transparent;
+  color: aliceblue;
+  padding: 0 2px;
+  margin: 0 2px;
+  border: 0;
+  border-left: 1px solid aliceblue;
+  font-size: 15px;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 650px) {
   .header__title {
     display: none;
