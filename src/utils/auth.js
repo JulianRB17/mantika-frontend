@@ -1,21 +1,20 @@
 // const baseUrl = 'https://api.julianrb-around.students.nomoredomainssbs.ru/';
+const baseUrl = 'http://127.0.0.1:3001/';
 
-const register = function (username, email, password, userDiscipline) {
-  //   return fetch(`${baseUrl}signup`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  // body: JSON.stringify({ email, password }),
-  //   })
-  //     .then((res) => {
-  //       if (res.status === 400)
-  //         throw new Error('uno de los campos se rellenó de forma incorrecta ');
-  //       else return res.json();
-  //     })
-  //     .catch((err) => console.error(err));
-  return Promise.resolve(
-    JSON.stringify({ username, email, password, userDiscipline })
-  );
-  //   return JSON.stringify({ username, email, password, userDiscipline });
+const register = async function (username, email, password, discipline) {
+  try {
+    console.log(JSON.stringify({ username, email, password, discipline }));
+    const res = await fetch(`${baseUrl}signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, email, password, discipline }),
+    });
+    if (res.status === 400)
+      throw new Error('uno de los campos se rellenó de forma incorrecta ');
+    else return res.json();
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 const authorize = function (email, password) {

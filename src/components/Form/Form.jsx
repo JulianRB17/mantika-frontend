@@ -43,13 +43,12 @@ export default function Form(props) {
               name="discipline"
               key={inputs.indexOf(input)}
               onChange={input.onChange}
-              //   defaultValue="-- select an option --"
-              //   value="-- select an option --"
-              //   placeholder="-- select an option --"
+              defaultValue="-- select an option --"
+              placeholder="-- select an option --"
             >
-              {/* <option disabled selected value>
+              <option disabled defaultValue>
                 -- select an option --
-              </option> */}
+              </option>
               {disciplines.map((discipline) => {
                 return (
                   <option

@@ -36,6 +36,8 @@ export default function Sidebar(props) {
           <p className="sidebar__info-value">{`2 ${text.proyectsCountText}`}</p>
         </div>
       </div>
+      <button>Edit</button>
+      <button>My proyects</button>
     </section>
   );
 }

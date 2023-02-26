@@ -1,11 +1,10 @@
 class TanslationApi {
   constructor(trLanguage = 'en') {
     this._url = 'https://ai-translate.p.rapidapi.com/translate';
-    this._apiKey = this._options = {
+    this._options = {
       method: 'POST',
       headers: {
         'content-type': 'application/json',
-        'X-RapidAPI-Key': '88b0925505mshd45e1f40a5a6fadp1c1d13jsn086c6ddec1eb',
         'X-RapidAPI-Host': 'ai-translate.p.rapidapi.com',
       },
     };
@@ -57,6 +56,7 @@ class TanslationApi {
 
     this._keysArray = Object.keys(this.spanishObject);
     this.translatedObject = {};
+    this._getApiKey();
   }
 
   _createBody() {
@@ -67,11 +67,21 @@ class TanslationApi {
     });
   }
 
+  async _getApiKey() {
+    try {
+      const res = await fetch('http://127.0.0.1:3001/apikey');
+      const data = await res.json();
+      this._options.headers['X-RapidAPI-Key'] = data.API_KEY;
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   async _translation() {
     this._createBody();
     try {
-      const json = await fetch(this._url, this._options);
-      const data = await json.json();
+      const res = await fetch(this._url, this._options);
+      const data = await res.json();
       return data;
     } catch (err) {
       throw new Error('Algo salió mal en el servidor');

@@ -88,6 +88,7 @@ export default function Main(props) {
           />
         );
       })}
+      <button>Agregar</button>
     </section>
   );
 }

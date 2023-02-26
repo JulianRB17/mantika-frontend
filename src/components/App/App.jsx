@@ -54,20 +54,18 @@ function App() {
     setLoading(true);
     register(username, email, password, userDiscipline)
       .then((data) => {
-        console.log(data);
-        setLoading(false);
-        // if (data.token) {
-        //       localStorage.setItem('jwt', data.token);
-        //       setJwt(data.token);
-        // setPassword('');
-        // navigate('/home', { replace: true });
-        // setAuthorized(true);
-        // } else {
-        // throw new Error('Algo salió mal');
-        // }
+        if (data.token) {
+          localStorage.setItem('jwt', data.token);
+          setJwt(data.token);
+          setPassword('');
+          navigate('/home', { replace: true });
+          setAuthorized(true);
+        } else {
+          throw new Error('Algo salió mal');
+        }
       })
-      .catch((err) => console.error(err));
-    // .finally(() => setPopupAuthOpen(true));
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
   }
 
   function handleLanguageChangeEn() {
@@ -275,7 +273,7 @@ function App() {
           }
         />
         <Route
-          path="/proyect/registration"
+          path="/proyect/register"
           element={
             <>
               <Sidebar text={text} />
