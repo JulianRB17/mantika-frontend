@@ -18,22 +18,22 @@ const register = async function (username, email, password, discipline) {
 };
 
 const authorize = function (email, password) {
-  //   return fetch(`${baseUrl}signin`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ email, password }),
-  //   })
-  //     .then((res) => {
-  //       if (res.status === 401) {
-  //         throw new Error('Uno de los campos está mal');
-  //       }
-  //       if (res.status === 400) {
-  //         throw new Error('No se ha proporcionado uno o más campos');
-  //       } else {
-  //         return res.json();
-  //       }
-  //     })
-  //     .catch((err) => console.error(err));
+  return fetch(`${baseUrl}login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((res) => {
+      if (res.status === 401) {
+        throw new Error('Uno de los campos está mal');
+      }
+      if (res.status === 400) {
+        throw new Error('No se ha proporcionado uno o más campos');
+      } else {
+        return res.json();
+      }
+    })
+    .catch((err) => console.error(err));
 };
 
 const checkToken = function (token) {

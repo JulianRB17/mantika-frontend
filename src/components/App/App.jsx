@@ -50,35 +50,62 @@ function App() {
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
 
-  function handleUserRegistration() {
-    setLoading(true);
-    register(username, email, password, userDiscipline)
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem('jwt', data.token);
-          setJwt(data.token);
-          setPassword('');
-          navigate('/home', { replace: true });
-          setAuthorized(true);
-        } else {
-          throw new Error('Algo salió mal');
-        }
-      })
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
+  function handleError(err) {
+    console.error(err);
+    setLoading(false);
   }
 
-  function handleLanguageChangeEn() {
-    if (!translated) {
+  async function handleUserRegistration() {
+    try {
       setLoading(true);
-      translationApi.createTranslatedObject().then((englishText) => {
-        setText(englishText);
-      });
-      setLoading(false);
-      setTranslated(true);
+      const data = await register(username, email, password, userDiscipline);
+      if (data.token) {
+        localStorage.setItem('jwt', data.token);
+        setJwt(data.token);
+        setPassword('');
+        navigate('/home', { replace: true });
+        setAuthorized(true);
+        setLoading(false);
+      } else {
+        throw new Error('Algo salió mal');
+      }
+    } catch (err) {
+      handleError(err);
     }
-    if (translated) {
-      setText(translationApi.translatedObject);
+  }
+  async function handleLogin() {
+    try {
+      setLoading(true);
+      const data = await authorize(email, password);
+      if (data.token) {
+        setJwt(data.token);
+        localStorage.setItem('jwt', data.token);
+        setPassword('');
+        navigate('/home', { replace: true });
+        setAuthorized(true);
+      } else {
+        throw new Error('Algo salió mal');
+      }
+      setLoading(false);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleLanguageChangeEn() {
+    try {
+      if (!translated) {
+        setLoading(true);
+        const englishText = await translationApi.createTranslatedObject();
+        setText(englishText);
+        setLoading(false);
+      }
+      if (translated) {
+        setText(translationApi.translatedObject);
+      }
+      setTranslated(true);
+    } catch (err) {
+      handleError(err);
     }
   }
 
@@ -196,10 +223,10 @@ function App() {
               <Form
                 inputs={[
                   {
-                    name: 'username',
-                    type: 'text',
-                    title: text.username,
-                    onChange: handleUsernameChange,
+                    name: 'email',
+                    type: 'email',
+                    title: 'Email',
+                    onChange: handleEmailChange,
                   },
                   {
                     name: 'password',
@@ -210,6 +237,7 @@ function App() {
                 ]}
                 formName="Login"
                 submitText="Login"
+                onSubmit={handleLogin}
               />
               <BackgroundImg src={balletImg} />
             </>
@@ -273,7 +301,7 @@ function App() {
           }
         />
         <Route
-          path="/proyect/register"
+          path="/proyect/create"
           element={
             <>
               <Sidebar text={text} />
