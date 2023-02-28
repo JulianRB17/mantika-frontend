@@ -14,6 +14,8 @@ import './app.css';
 import translationApi from '../../utils/translationApi';
 import api from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
+import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import { TextContext } from '../../contexts/TextContext';
 
 import hiphopImg from '../../images/hip-hop-dance.jpg';
 import graffitiImg from '../../images/graffiti.jpg';
@@ -36,7 +38,6 @@ function App() {
   const [userDiscipline, setUserDiscipline] = useState('');
   const [userDescription, setUserDescription] = useState('');
   const [userCity, setUserCity] = useState('');
-  const [userId, setUserId] = useState('');
   const [colaboratingInProyects, setcolaboratingInProyects] = useState('');
   const [createdProyects, setCreatedProyects] = useState('');
   const [currentUser, setCurrentUser] = useState('');
@@ -76,7 +77,7 @@ function App() {
           }
         }
       } catch (err) {
-        console.error(err);
+        handleError(err);
       }
     })();
   }, []);
@@ -86,6 +87,7 @@ function App() {
       if (isAuthorized) {
         try {
           const userInfo = await api.getUserInfo(jwt);
+          console.log(userInfo);
           // , api.getInitialCards()])
           // .then(([userInfo, cards]) => {
           setCurrentUser(userInfo.currentUser);
@@ -236,226 +238,231 @@ function App() {
   }
 
   return (
-    <div className="app">
-      <Header
-        isAuthorized={isAuthorized}
-        user={currentUser}
-        onLanguageChangeEn={handleLanguageChangeEn}
-        onLanguageChangeEs={handleLanguageChangeEs}
-        onChange={handleSearchInputChange}
-        onLogout={handleLogout}
-      />
-      <Preloader isLoading={isLoading} />
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Landing text={text} />
-              <BackgroundImg src={hiphopImg} />
-            </>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <>
-              <Form
-                inputs={[
-                  {
-                    name: 'username',
-                    type: 'text',
-                    title: text.username,
-                    onChange: handleUsernameChange,
-                  },
-                  {
-                    name: 'email',
-                    type: 'email',
-                    title: 'Email',
-                    onChange: handleEmailChange,
-                  },
-                  {
-                    name: 'password',
-                    type: 'password',
-                    title: text.password,
-                    onChange: handlePasswordChange,
-                  },
-                  {
-                    name: 'discipline',
-                    type: 'text',
-                    title: text.discipline,
-                    onChange: handleUserDiscipline,
-                  },
-                ]}
-                formName="Register"
-                submitText={text.registerBtn}
-                onSubmit={handleUserRegistration}
-              />
-              <BackgroundImg src={graffitiImg} />
-            </>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <>
-              <Form
-                inputs={[
-                  {
-                    name: 'email',
-                    type: 'email',
-                    title: 'Email',
-                    onChange: handleEmailChange,
-                  },
-                  {
-                    name: 'password',
-                    type: 'password',
-                    title: text.password,
-                    onChange: handlePasswordChange,
-                  },
-                ]}
-                formName="Login"
-                submitText="Login"
-                onSubmit={handleLogin}
-              />
-              <BackgroundImg src={balletImg} />
-            </>
-          }
-        />
-        <Route
-          path="/about"
-          element={
-            <>
-              <About text={text} />
-              <BackgroundImg src={balletDancerImg} />
-            </>
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            <>
-              <Sidebar user={currentUser} />
-              <Main text={text} />
-            </>
-          }
-        />
-        <Route
-          path="/users/:id"
-          element={
-            <>
-              <Presentation
-                elements={[
-                  {
-                    key: text.username,
-                    value: username,
-                    isInput: true,
-                    onChange: handleUsernameChange,
-                  },
-                  {
-                    key: text.description,
-                    value: userDescription,
-                    modifier: 'presentation__input_large',
-                    isInput: true,
-                    isLarge: true,
-                    onChange: handleDescriptionChange,
-                  },
-                  {
-                    key: text.city,
-                    value: userCity,
-                    isInput: true,
-                    onChange: handleCityChange,
-                  },
-                  { key: text.createdProyects, value: createdProyects.length },
-                  {
-                    key: text.colaboratingIn,
-                    value: colaboratingInProyects.length,
-                  },
-                ]}
-                img={profilePic ? profilePic : graffitiImg}
-                submitText="Edit"
-                onSubmit={handleEditUser}
-              />
-              <BackgroundImg src={graffitiImg} />
-            </>
-          }
-        />
-        <Route
-          path="/proyect/create"
-          element={
-            <>
-              <Sidebar text={text} user={currentUser} />
-              <Form
-                img={graffitiImg}
-                inputs={[
-                  {
-                    name: 'proyectName',
-                    type: 'text',
-                    title: text.proyect,
-                    onChange: handleCurrentProyectNameChange,
-                  },
-                  {
-                    name: 'proyectDescription',
-                    type: 'text',
-                    modifier: 'form__input_large',
-                    title: text.description,
-                    onChange: handleCurrentProyectDescriptionChange,
-                  },
-                  {
-                    name: 'proyectCity',
-                    type: 'text',
-                    title: text.city,
-                    onChange: handleCurrentProyectCityChange,
-                  },
-                  {
-                    name: 'proyectDiscipline',
-                    type: 'text',
-                    title: text.discipline,
-                    onChange: handleCurrentProyectDiscipline,
-                  },
-                ]}
-                formName="Create a new proyect"
-                submitText={text.createBtn}
-              />
+    <CurrentUserContext.Provider value={currentUser}>
+      <TextContext.Provider value={text}>
+        <div className="app">
+          <Header
+            isAuthorized={isAuthorized}
+            onLanguageChangeEn={handleLanguageChangeEn}
+            onLanguageChangeEs={handleLanguageChangeEs}
+            onChange={handleSearchInputChange}
+            onLogout={handleLogout}
+          />
+          <Preloader isLoading={isLoading} />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <>
+                  <Landing />
+                  <BackgroundImg src={hiphopImg} />
+                </>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <>
+                  <Form
+                    inputs={[
+                      {
+                        name: 'username',
+                        type: 'text',
+                        title: text.username,
+                        onChange: handleUsernameChange,
+                      },
+                      {
+                        name: 'email',
+                        type: 'email',
+                        title: 'Email',
+                        onChange: handleEmailChange,
+                      },
+                      {
+                        name: 'password',
+                        type: 'password',
+                        title: text.password,
+                        onChange: handlePasswordChange,
+                      },
+                      {
+                        name: 'discipline',
+                        type: 'text',
+                        title: text.discipline,
+                        onChange: handleUserDiscipline,
+                      },
+                    ]}
+                    formName="Register"
+                    submitText={text.registerBtn}
+                    onSubmit={handleUserRegistration}
+                  />
+                  <BackgroundImg src={graffitiImg} />
+                </>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <Form
+                    inputs={[
+                      {
+                        name: 'email',
+                        type: 'email',
+                        title: 'Email',
+                        onChange: handleEmailChange,
+                      },
+                      {
+                        name: 'password',
+                        type: 'password',
+                        title: text.password,
+                        onChange: handlePasswordChange,
+                      },
+                    ]}
+                    formName="Login"
+                    submitText="Login"
+                    onSubmit={handleLogin}
+                  />
+                  <BackgroundImg src={balletImg} />
+                </>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <>
+                  <About />
+                  <BackgroundImg src={balletDancerImg} />
+                </>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <>
+                  <Sidebar />
+                  <Main />
+                </>
+              }
+            />
+            <Route
+              path="/users/:id"
+              element={
+                <>
+                  <Presentation
+                    elements={[
+                      {
+                        key: text.username,
+                        value: 'username',
+                        isInput: true,
+                        onChange: handleUsernameChange,
+                      },
+                      {
+                        key: text.description,
+                        value: 'description',
+                        modifier: 'presentation__input_large',
+                        isInput: true,
+                        isLarge: true,
+                        onChange: handleDescriptionChange,
+                      },
+                      {
+                        key: text.city,
+                        value: 'city',
+                        isInput: true,
+                        onChange: handleCityChange,
+                      },
+                      {
+                        key: text.createdProyects,
+                        value: 'createdProyects.length',
+                      },
+                      {
+                        key: text.colaboratingIn,
+                        value: 'colaboratingInProyects.length',
+                      },
+                    ]}
+                    img={profilePic ? profilePic : graffitiImg}
+                    submitText="Edit"
+                    onSubmit={handleEditUser}
+                  />
+                  <BackgroundImg src={graffitiImg} />
+                </>
+              }
+            />
+            <Route
+              path="/proyect/create"
+              element={
+                <>
+                  <Sidebar />
+                  <Form
+                    img={graffitiImg}
+                    inputs={[
+                      {
+                        name: 'proyectName',
+                        type: 'text',
+                        title: text.proyect,
+                        onChange: handleCurrentProyectNameChange,
+                      },
+                      {
+                        name: 'proyectDescription',
+                        type: 'text',
+                        modifier: 'form__input_large',
+                        title: text.description,
+                        onChange: handleCurrentProyectDescriptionChange,
+                      },
+                      {
+                        name: 'proyectCity',
+                        type: 'text',
+                        title: text.city,
+                        onChange: handleCurrentProyectCityChange,
+                      },
+                      {
+                        name: 'proyectDiscipline',
+                        type: 'text',
+                        title: text.discipline,
+                        onChange: handleCurrentProyectDiscipline,
+                      },
+                    ]}
+                    formName="Create a new proyect"
+                    submitText={text.createBtn}
+                  />
 
-              <BackgroundImg src={brushImg} />
-            </>
-          }
-        />
-        <Route
-          path="/proyect/:id"
-          element={
-            <>
-              <Presentation
-                text={text}
-                img={balletDancerImg}
-                elements={[
-                  {
-                    key: text.proyect,
-                    value: currentProyectName,
-                  },
-                  {
-                    key: text.description,
-                    value: currentProyectDescription,
-                    modifier: 'presentation__input_large',
-                    isLarge: true,
-                  },
-                  {
-                    key: text.city,
-                    value: currentProyectCity,
-                  },
-                  { key: text.colaborators, value: 30 },
-                ]}
-                submitText={text.colaborateBtn}
-              />
-              <BackgroundImg src={balletDancerImg} />
-            </>
-          }
-        />
-      </Routes>
-      <Popup popupName={popupName} isPopupOpen={isPopupOpen} />
-      <Footer />
-    </div>
+                  <BackgroundImg src={brushImg} />
+                </>
+              }
+            />
+            <Route
+              path="/proyect/:id"
+              element={
+                <>
+                  <Presentation
+                    img={balletDancerImg}
+                    elements={[
+                      {
+                        key: text.proyect,
+                        value: currentProyectName,
+                      },
+                      {
+                        key: text.description,
+                        value: currentProyectDescription,
+                        modifier: 'presentation__input_large',
+                        isLarge: true,
+                      },
+                      {
+                        key: text.city,
+                        value: currentProyectCity,
+                      },
+                      { key: text.colaborators, value: 30 },
+                    ]}
+                    submitText={text.colaborateBtn}
+                  />
+                  <BackgroundImg src={balletDancerImg} />
+                </>
+              }
+            />
+          </Routes>
+          <Popup popupName={popupName} isPopupOpen={isPopupOpen} />
+          <Footer />
+        </div>
+      </TextContext.Provider>
+    </CurrentUserContext.Provider>
   );
 }
 

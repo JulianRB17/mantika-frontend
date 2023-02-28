@@ -6,7 +6,6 @@ import Navigation from '../Navigation/Navigation';
 export default function Header(props) {
   const {
     isAuthorized,
-    username,
     onChange,
     onLanguageChangeEn,
     onLanguageChangeEs,
@@ -38,7 +37,6 @@ export default function Header(props) {
       </div>
       <Navigation
         isAuthorized={isAuthorized}
-        username={username}
         onChange={onChange}
         onLogout={onLogout}
       />

@@ -38,14 +38,14 @@
 
 .presentation__info-key {
   margin: 0;
-  font-size: 25px;
+  font-size: 20px;
   line-height: 35px;
   font-weight: 400;
 }
 
 .presentation__info-value {
   margin: 0 0 0 30px;
-  font-size: 25px;
+  font-size: 20px;
   line-height: 37px;
 }
 
@@ -55,6 +55,7 @@
   border-radius: 5px;
   width: fit-content;
   min-width: 100px;
+  font-size: 20px;
 }
 
 .presentation__input_large {

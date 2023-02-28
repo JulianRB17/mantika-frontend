@@ -54,6 +54,42 @@ class TanslationApi {
       proyect: 'Proyecto: ',
     };
 
+    this._disciplines = [
+      'teatro',
+      'danza contemporanea',
+      'danzas tradicionales',
+      'ballet',
+      'pintura',
+      'escultura',
+      'grabado',
+      'ceramica',
+      'diseño gráfico',
+      'dibujo',
+      'cinematografía',
+      'fotografía',
+      'cuento',
+      'novela',
+      'poesía',
+      'literatura dramática',
+      'música',
+      'performance art',
+      'artes interdisciplinarias y multidisciplinarias',
+      'arquitectura',
+      'ilustración',
+      'instalación y arte conceptual',
+      'joyería',
+      'artes digitales',
+      'platería y orfebrería',
+      'diseño de modas',
+      'diseño espacial',
+      'diseño editorial',
+      'diseño textil',
+      'ebanistería',
+      'artes circenses',
+      'comic',
+      'diseño industrial',
+    ];
+
     this._keysArray = Object.keys(this.spanishObject);
     this.translatedObject = {};
     this._getApiKey();

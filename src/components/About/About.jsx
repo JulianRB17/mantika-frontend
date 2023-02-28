@@ -1,8 +1,9 @@
 import React from 'react';
 import logo from '../../images/Logo.svg';
+import { TextContext } from '../../contexts/TextContext';
 
-export default function About(props) {
-  const { text } = props;
+export default function About() {
+  const text = React.useContext(TextContext);
 
   return (
     <section className="about">

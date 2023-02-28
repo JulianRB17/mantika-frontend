@@ -68,16 +68,13 @@ const proyects = [
   },
 ];
 
-export default function Main(props) {
-  const { text } = props;
-
+export default function Main() {
   return (
     <section className="main">
       {proyects.map((proyect) => {
         const { _id, img, name, discipline, creator, colaborators } = proyect;
         return (
           <Proyect
-            text={text}
             name={name}
             key={_id}
             img={img}

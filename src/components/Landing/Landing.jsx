@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import logo from '../../images/Logo.svg';
+import { TextContext } from '../../contexts/TextContext';
 
-export default function landing(props) {
-  const { text } = props;
+export default function Landing() {
+  const text = React.useContext(TextContext);
 
   return (
     <section className="landing">
