@@ -12,7 +12,7 @@ import BackgroundImg from '../BackgroundImg/BackgroundImg';
 import Preloader from '../Preloader/Preloader';
 import './app.css';
 import translationApi from '../../utils/translationApi';
-
+import api from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
 
 import hiphopImg from '../../images/hip-hop-dance.jpg';
@@ -27,14 +27,16 @@ function App() {
   const [popupName, setPopupName] = useState('login');
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [jwt, setJwt] = useState('');
-  const [isAuthorized, setAuthorized] = useState(true);
+  const [isAuthorized, setAuthorized] = useState(false);
   const [searchInput, setSearchInput] = React.useState('');
+  const [profilePic, setProfilePic] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [userDiscipline, setUserDiscipline] = useState('');
-  const [description, setDescription] = useState('');
-  const [city, setCity] = useState('');
+  const [userDescription, setUserDescription] = useState('');
+  const [userCity, setUserCity] = useState('');
+  const [userId, setUserId] = useState('');
   const [colaboratingInProyects, setcolaboratingInProyects] = useState('');
   const [createdProyects, setCreatedProyects] = useState('');
   const [currentUser, setCurrentUser] = useState('');
@@ -54,6 +56,50 @@ function App() {
     console.error(err);
     setLoading(false);
   }
+
+  React.useEffect(() => {
+    const token = localStorage.getItem('jwt');
+    (async function () {
+      try {
+        if (token) {
+          setLoading(true);
+          const res = await checkToken(token);
+          if (res.currentUser) {
+            setJwt(token);
+            setAuthorized(true);
+            navigation.current('/');
+            setLoading(false);
+          } else {
+            setAuthorized(false);
+            setLoading(false);
+            navigate('/', { replace: true });
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, []);
+
+  React.useEffect(() => {
+    (async function () {
+      if (isAuthorized) {
+        try {
+          const userInfo = await api.getUserInfo(jwt);
+          // , api.getInitialCards()])
+          // .then(([userInfo, cards]) => {
+          setCurrentUser(userInfo.currentUser);
+          // setCards(cards.cards);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    })();
+  }, [isAuthorized, jwt]);
+
+  React.useEffect(() => {
+    if (jwt) navigation.current('/home');
+  }, [jwt, navigation]);
 
   async function handleUserRegistration() {
     try {
@@ -92,6 +138,37 @@ function App() {
     }
   }
 
+  async function handleEditUser() {
+    try {
+      setLoading(true);
+      const data = await api.changeUserInfo({
+        username,
+        city: userCity,
+        description: userDescription,
+        discipline: userDiscipline,
+        password,
+        profilePic,
+      });
+      setPassword('');
+      if (data) {
+        navigate('/home', { replace: true });
+      } else {
+        throw new Error('Algo salió mal');
+      }
+      setLoading(false);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  function handleLogout() {
+    setEmail('');
+    setJwt('');
+    setAuthorized(false);
+    localStorage.removeItem('jwt');
+    navigate('/', { replace: true });
+  }
+
   async function handleLanguageChangeEn() {
     try {
       if (!translated) {
@@ -126,11 +203,12 @@ function App() {
   }
 
   function handleDescriptionChange(e) {
-    setDescription(e.target.value);
+    setUserDescription(e.target.value);
   }
 
   function handleCityChange(e) {
-    setCity(e.target.value);
+    setUserCity(e.target.value);
+    console.log(userCity);
   }
 
   function handleUserDiscipline(e) {
@@ -161,10 +239,11 @@ function App() {
     <div className="app">
       <Header
         isAuthorized={isAuthorized}
-        username={username}
+        user={currentUser}
         onLanguageChangeEn={handleLanguageChangeEn}
         onLanguageChangeEs={handleLanguageChangeEs}
         onChange={handleSearchInputChange}
+        onLogout={handleLogout}
       />
       <Preloader isLoading={isLoading} />
       <Routes>
@@ -256,7 +335,7 @@ function App() {
           path="/home"
           element={
             <>
-              <Sidebar text={text} />
+              <Sidebar user={currentUser} />
               <Main text={text} />
             </>
           }
@@ -269,13 +348,13 @@ function App() {
                 elements={[
                   {
                     key: text.username,
-                    value: { username },
+                    value: username,
                     isInput: true,
                     onChange: handleUsernameChange,
                   },
                   {
                     key: text.description,
-                    value: description,
+                    value: userDescription,
                     modifier: 'presentation__input_large',
                     isInput: true,
                     isLarge: true,
@@ -283,7 +362,7 @@ function App() {
                   },
                   {
                     key: text.city,
-                    value: city,
+                    value: userCity,
                     isInput: true,
                     onChange: handleCityChange,
                   },
@@ -293,8 +372,9 @@ function App() {
                     value: colaboratingInProyects.length,
                   },
                 ]}
-                img={graffitiImg}
+                img={profilePic ? profilePic : graffitiImg}
                 submitText="Edit"
+                onSubmit={handleEditUser}
               />
               <BackgroundImg src={graffitiImg} />
             </>
@@ -304,7 +384,7 @@ function App() {
           path="/proyect/create"
           element={
             <>
-              <Sidebar text={text} />
+              <Sidebar text={text} user={currentUser} />
               <Form
                 img={graffitiImg}
                 inputs={[

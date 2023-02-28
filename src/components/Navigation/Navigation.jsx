@@ -3,7 +3,12 @@ import { NavLink } from 'react-router-dom';
 import searchIcon from '../../images/search-icon.svg';
 
 export default function Navigation(props) {
-  const { isAuthorized, username, searchInput, onChange } = props;
+  const { isAuthorized, username, searchInput, onChange, onLogout } = props;
+
+  function handleLogout(e) {
+    e.preventDefault();
+    onLogout();
+  }
 
   if (isAuthorized) {
     return (
@@ -32,9 +37,9 @@ export default function Navigation(props) {
           <NavLink className="navigation__link" to="/users/me">
             {username}
           </NavLink>
-          <NavLink className="navigation__link" to="/">
+          <button className="navigation__link" to="/" onClick={handleLogout}>
             Logout
-          </NavLink>
+          </button>
         </div>
       </section>
     );

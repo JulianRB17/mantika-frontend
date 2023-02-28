@@ -17,44 +17,44 @@ const register = async function (username, email, password, discipline) {
   }
 };
 
-const authorize = function (email, password) {
-  return fetch(`${baseUrl}login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
-  })
-    .then((res) => {
-      if (res.status === 401) {
-        throw new Error('Uno de los campos está mal');
-      }
-      if (res.status === 400) {
-        throw new Error('No se ha proporcionado uno o más campos');
-      } else {
-        return res.json();
-      }
-    })
-    .catch((err) => console.error(err));
+const authorize = async function (email, password) {
+  try {
+    const res = await fetch(`${baseUrl}login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    if (res.status === 401) {
+      throw new Error('Uno de los campos está mal');
+    }
+    if (res.status === 400) {
+      throw new Error('No se ha proporcionado uno o más campos');
+    } else {
+      return res.json();
+    }
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-const checkToken = function (token) {
-  //   return fetch(`${baseUrl}users/me`, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       Authorization: `Bearer ${token}`,
-  //     },
-  //   })
-  //     .then((response) => {
-  //       if (response.status === 400)
-  //         throw new Error(
-  //           'Token no proporcionado o proporcionado en formato incorrecto'
-  //         );
-  //       if (response.status === 401)
-  //         throw new Error('El token provisto es inválido');
-  //       else return response.json();
-  //     })
-  //     .then((res) => res)
-  //     .catch((err) => console.error(err));
+const checkToken = async function (token) {
+  try {
+    const res = await fetch(`${baseUrl}users/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.status === 400)
+      throw new Error(
+        'Token no proporcionado o proporcionado en formato incorrecto'
+      );
+    if (res.status === 401) throw new Error('El token provisto es inválido');
+    else return res.json();
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export { register, authorize, checkToken };

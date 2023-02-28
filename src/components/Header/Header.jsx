@@ -10,6 +10,7 @@ export default function Header(props) {
     onChange,
     onLanguageChangeEn,
     onLanguageChangeEs,
+    onLogout,
   } = props;
 
   function handleLanguageChangeEn(e) {
@@ -39,6 +40,7 @@ export default function Header(props) {
         isAuthorized={isAuthorized}
         username={username}
         onChange={onChange}
+        onLogout={onLogout}
       />
     </section>
   );

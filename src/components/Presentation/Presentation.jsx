@@ -1,8 +1,13 @@
 import React from 'react';
 
 export default function Presentation(props) {
-  const { elements, submitText, img } = props;
+  const { elements, submitText, img, onSubmit } = props;
   const [isMe, setIsMe] = React.useState(true);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    onSubmit();
+  }
 
   if (isMe) {
     return (
@@ -22,6 +27,7 @@ export default function Presentation(props) {
                       element.modifier ? element.modifier : ''
                     }`}
                     placeholder={element.value}
+                    onChange={element.onChange}
                   />
                 );
               }
@@ -33,6 +39,7 @@ export default function Presentation(props) {
                       element.modifier ? element.modifier : ''
                     }`}
                     placeholder={element.value}
+                    onChange={element.onChange}
                   />
                 );
               } else {
@@ -60,7 +67,9 @@ export default function Presentation(props) {
           })}
         </div>
 
-        <button className="presentation__submit-btn">{submitText}</button>
+        <button className="presentation__submit-btn" onClick={handleSubmit}>
+          {submitText}
+        </button>
       </form>
     );
   }

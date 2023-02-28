@@ -1,6 +1,6 @@
 class Api {
   constructor() {
-    this._baseUrl = '';
+    this._baseUrl = 'http://127.0.0.1:3001/';
     this._options = {
       headers: {
         'Content-Type': 'application/json',
@@ -53,13 +53,18 @@ class Api {
   }
 
   changeUserInfo(data) {
+    console.log(this);
+    const { username, city, description, discipline, password, profilePic } =
+      data;
     this._specificUrl = 'users/me';
     this._options.method = 'PATCH';
     this._options.body = JSON.stringify({
-      username: data.username,
-      discipline: data.discipline,
-      city: data.city,
-      about: data.about,
+      username,
+      city,
+      description,
+      discipline,
+      password,
+      profilePic,
     });
     return this._fetchData();
   }
