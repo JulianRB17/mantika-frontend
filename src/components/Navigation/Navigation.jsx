@@ -22,7 +22,10 @@ export default function Navigation(props) {
           <NavLink className="navigation__link" to="/about">
             About us
           </NavLink>
-          <NavLink className="navigation__link" to="/users/me">
+          <NavLink
+            className="navigation__link"
+            to={`../users/${currentUser._id}`}
+          >
             {currentUser.username}
           </NavLink>
           <button className="navigation__link" to="/" onClick={handleLogout}>

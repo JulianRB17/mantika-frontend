@@ -27,11 +27,12 @@ class Api {
     return this._fetchData();
   }
 
-  deleteUser(id) {
+  async deleteUser(id) {
     this._specificUrl = `users/${id} `;
     this._options.method = 'DELETE';
     delete this._options.body;
-    return this._fetchData().then(() => id);
+    const deltedUser = await this._fetchData();
+    return deltedUser;
   }
 
   deleteProyect(id) {

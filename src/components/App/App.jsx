@@ -48,6 +48,7 @@ function App() {
   const [currentProyectCity, setCurrentProyectCity] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [text, setText] = useState(translationApi.spanishObject);
+  const [disciplines, setDisciplines] = useState(translationApi.disciplines);
   const [translated, setTranslated] = useState(false);
 
   const navigate = useNavigate();
@@ -86,12 +87,13 @@ function App() {
     (async function () {
       if (isAuthorized) {
         try {
+          setLoading(true);
           const userInfo = await api.getUserInfo(jwt);
-          console.log(userInfo);
           // , api.getInitialCards()])
           // .then(([userInfo, cards]) => {
           setCurrentUser(userInfo.currentUser);
           // setCards(cards.cards);
+          setLoading(false);
         } catch (err) {
           console.error(err);
         }
@@ -153,6 +155,7 @@ function App() {
       });
       setPassword('');
       if (data) {
+        setCurrentUser(data.user);
         navigate('/home', { replace: true });
       } else {
         throw new Error('Algo salió mal');
@@ -164,11 +167,20 @@ function App() {
   }
 
   function handleLogout() {
-    setEmail('');
     setJwt('');
     setAuthorized(false);
     localStorage.removeItem('jwt');
     navigate('/', { replace: true });
+  }
+
+  async function handleDeleteUser() {
+    try {
+      const user = await api.deleteUser(currentUser._id);
+      console.log(user);
+      handleLogout();
+    } catch (err) {
+      handleError(err);
+    }
   }
 
   async function handleLanguageChangeEn() {
@@ -176,13 +188,17 @@ function App() {
       if (!translated) {
         setLoading(true);
         const englishText = await translationApi.createTranslatedObject();
+        const englishDisciplines =
+          await translationApi.createTranslatedDisciplines();
         setText(englishText);
+        setDisciplines(englishDisciplines);
+        setTranslated(true);
         setLoading(false);
       }
       if (translated) {
         setText(translationApi.translatedObject);
+        setDisciplines(translationApi.translatedDisciplines);
       }
-      setTranslated(true);
     } catch (err) {
       handleError(err);
     }
@@ -210,7 +226,6 @@ function App() {
 
   function handleCityChange(e) {
     setUserCity(e.target.value);
-    console.log(userCity);
   }
 
   function handleUserDiscipline(e) {
@@ -285,7 +300,6 @@ function App() {
                       },
                       {
                         name: 'discipline',
-                        type: 'text',
                         title: text.discipline,
                         onChange: handleUserDiscipline,
                       },
@@ -293,6 +307,7 @@ function App() {
                     formName="Register"
                     submitText={text.registerBtn}
                     onSubmit={handleUserRegistration}
+                    disciplines={disciplines}
                   />
                   <BackgroundImg src={graffitiImg} />
                 </>
@@ -350,13 +365,13 @@ function App() {
                   <Presentation
                     elements={[
                       {
-                        key: text.username,
+                        title: text.username,
                         value: 'username',
                         isInput: true,
                         onChange: handleUsernameChange,
                       },
                       {
-                        key: text.description,
+                        title: text.description,
                         value: 'description',
                         modifier: 'presentation__input_large',
                         isInput: true,
@@ -364,23 +379,30 @@ function App() {
                         onChange: handleDescriptionChange,
                       },
                       {
-                        key: text.city,
+                        title: text.city,
                         value: 'city',
                         isInput: true,
                         onChange: handleCityChange,
                       },
                       {
-                        key: text.createdProyects,
+                        title: text.createdProyects,
                         value: 'createdProyects.length',
                       },
                       {
-                        key: text.colaboratingIn,
+                        title: text.colaboratingIn,
                         value: 'colaboratingInProyects.length',
+                      },
+                      {
+                        title: text.discipline,
+                        name: 'discipline',
+                        onChange: handleUserDiscipline,
                       },
                     ]}
                     img={profilePic ? profilePic : graffitiImg}
                     submitText="Edit"
                     onSubmit={handleEditUser}
+                    onDelete={handleDeleteUser}
+                    disciplines={disciplines}
                   />
                   <BackgroundImg src={graffitiImg} />
                 </>
@@ -422,6 +444,7 @@ function App() {
                     ]}
                     formName="Create a new proyect"
                     submitText={text.createBtn}
+                    disciplines={disciplines}
                   />
 
                   <BackgroundImg src={brushImg} />
@@ -452,6 +475,7 @@ function App() {
                       { key: text.colaborators, value: 30 },
                     ]}
                     submitText={text.colaborateBtn}
+                    // disciplines={disciplines}
                   />
                   <BackgroundImg src={balletDancerImg} />
                 </>

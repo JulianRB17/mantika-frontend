@@ -1,10 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import trashBtn from '../../images/trash-btn.svg';
 
 export default function Presentation(props) {
   const currentUser = React.useContext(CurrentUserContext);
-  const { elements, submitText, img, onSubmit } = props;
+  const { elements, submitText, img, onSubmit, onDelete, disciplines } = props;
   const { id } = useParams();
   const [isMe, setIsMe] = React.useState(false);
 
@@ -21,7 +22,34 @@ export default function Presentation(props) {
     onSubmit();
   }
 
-  const largeInputRenderer = function (element) {
+  const handleDelete = function (e) {
+    e.preventDefault();
+    onDelete();
+  };
+
+  function disciplineRenderer(element) {
+    return (
+      <select
+        required
+        className="presentation__input presentation__info-value"
+        name="discipline"
+        key={elements.indexOf(element)}
+        onChange={element.onChange}
+        defaultValue={currentUser.discipline}
+        placeholder={currentUser.discipline}
+      >
+        {disciplines.map((discipline) => {
+          return (
+            <option value={discipline} key={disciplines.indexOf(discipline)}>
+              {discipline}
+            </option>
+          );
+        })}
+      </select>
+    );
+  }
+
+  function largeInputRenderer(element) {
     return (
       <textarea
         className={`presentation__info-value presentation__input ${
@@ -31,7 +59,7 @@ export default function Presentation(props) {
         onChange={element.onChange}
       />
     );
-  };
+  }
 
   const inputRenderer = function (element) {
     return (
@@ -45,27 +73,34 @@ export default function Presentation(props) {
     );
   };
 
-  const paragraphRenderer = function (element) {
+  function paragraphRenderer(element) {
     return (
       <p className={`presentation__info-value ${element.modifier || ''}`}>
         {currentUser[element.value] || 0}
       </p>
     );
-  };
+  }
 
-  const elementRenderer = function (element) {
+  function elementRenderer(element) {
     if (isMe && element.isInput && element.isLarge) {
       return largeInputRenderer(element);
     }
     if (isMe && element.isInput) {
       return inputRenderer(element);
+    }
+    if (element.name === 'discipline') {
+      return disciplineRenderer(element);
     } else {
       return paragraphRenderer(element);
     }
-  };
+  }
 
   return (
     <form className="presentation">
+      <button
+        className="presentation__trash-btn"
+        onClick={handleDelete}
+      ></button>
       <img
         src={img}
         alt="Imagen de perfil"
@@ -78,7 +113,7 @@ export default function Presentation(props) {
               className="presentation__info-element"
               key={elements.indexOf(element)}
             >
-              <h2 className="presentation__info-key">{element.key}</h2>
+              <h2 className="presentation__info-key">{element.title}</h2>
               {elementRenderer(element)}
             </div>
           );

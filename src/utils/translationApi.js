@@ -54,7 +54,7 @@ class TanslationApi {
       proyect: 'Proyecto: ',
     };
 
-    this._disciplines = [
+    this.disciplines = [
       'teatro',
       'danza contemporanea',
       'danzas tradicionales',
@@ -95,9 +95,18 @@ class TanslationApi {
     this._getApiKey();
   }
 
-  _createBody() {
+  _createTextBody() {
+    console.log(this);
     this._options.body = JSON.stringify({
       texts: Object.values(this.spanishObject),
+      tl: this._trLanguague,
+      sl: this._srcLanguage,
+    });
+  }
+
+  _createDisciplinesBody() {
+    this._options.body = JSON.stringify({
+      texts: this.disciplines,
       tl: this._trLanguague,
       sl: this._srcLanguage,
     });
@@ -113,8 +122,8 @@ class TanslationApi {
     }
   }
 
-  async _translation() {
-    this._createBody();
+  async _translation(createBody) {
+    createBody();
     try {
       const res = await fetch(this._url, this._options);
       const data = await res.json();
@@ -124,8 +133,17 @@ class TanslationApi {
     }
   }
 
+  async createTranslatedDisciplines() {
+    this.translatedDisciplines = await this._translation(
+      this._createDisciplinesBody.bind(this)
+    );
+    return this.translatedDisciplines.texts;
+  }
+
   async createTranslatedObject() {
-    const translatedArray = await this._translation();
+    const translatedArray = await this._translation(
+      this._createTextBody.bind(this)
+    );
     this._keysArray.forEach((key, i) => {
       this.translatedObject[key] = translatedArray.texts[i];
     });
