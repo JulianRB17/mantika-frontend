@@ -32,7 +32,8 @@ function App() {
   const [isPopupOpen, setPopupOpen] = useState(true);
   const [jwt, setJwt] = useState('');
   const [isAuthorized, setAuthorized] = useState(false);
-  const [searchInput, setSearchInput] = React.useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [proyectPic, setProyectPic] = useState('');
   const [profilePic, setProfilePic] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -219,6 +220,57 @@ function App() {
     }
   }
 
+  async function handleMyProyectsRenderer() {
+    try {
+      setLoading(true);
+      const myProyectsData = await api.getMyProyects();
+      setProyects(myProyectsData);
+      setLoading(false);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleAllProyectsRenderer() {
+    try {
+      setLoading(true);
+      const proyects = await api.getInitialProyects();
+      setProyects(proyects);
+      setLoading(false);
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleEditProyect() {
+    // try {
+    //   setLoading(true);
+    //   const data = await api.changeProyectInfo({
+    //     proyectName,
+    //     city,
+    //     description,
+    //     discipline,
+    //     proyectPic,
+    //   });
+    //   if (data) {
+    //     setCurrentUser(data.user);
+    //     navigate('/home', { replace: true });
+    //     handleSuccess();
+    //   } else {
+    //     throw new Error('Algo salió mal');
+    //   }
+    // } catch (err) {
+    //   handleError(err);
+    // }
+  }
+
+  async function handleGetProyect() {
+    try {
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
   async function handleLanguageChangeEn() {
     try {
       if (!translated) {
@@ -276,6 +328,10 @@ function App() {
     setSearchInput(e.target.value);
   }
 
+  function handleProyectPicChange(e) {
+    setProyectPic(e.target.value);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <TextContext.Provider value={text}>
@@ -284,6 +340,7 @@ function App() {
             isAuthorized={isAuthorized}
             onLanguageChangeEn={handleLanguageChangeEn}
             onLanguageChangeEs={handleLanguageChangeEs}
+            onAllProyectsRenderer={handleAllProyectsRenderer}
             onChange={handleSearchInputChange}
             onLogout={handleLogout}
           />
@@ -377,7 +434,7 @@ function App() {
               path="/home"
               element={
                 <>
-                  <Sidebar />
+                  <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
                   <Main proyects={proyects} />
                 </>
               }
@@ -436,7 +493,7 @@ function App() {
               path="/proyect/create"
               element={
                 <>
-                  <Sidebar />
+                  <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
                   <Form
                     img={graffitiImg}
                     inputs={[

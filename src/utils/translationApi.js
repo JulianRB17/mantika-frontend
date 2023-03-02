@@ -52,6 +52,9 @@ class TanslationApi {
       colaborators: 'Colaboradores: ',
       colaborateBtn: 'Colaborar',
       proyect: 'Proyecto: ',
+      editBtn: 'Editar',
+      deleteBtn: 'Borrar',
+      myProyectsBtn: 'Mis proyectos',
     };
 
     this.disciplines = [

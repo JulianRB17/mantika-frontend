@@ -1,17 +1,23 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
+import predetermined from '../../images/predetermined.jpg';
 
 export default function Proyect(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const text = React.useContext(TextContext);
 
-  const { proyectName, discipline, owner, proyectPic, colaborators } =
+  const { proyectName, discipline, owner, proyectPic, colaborators, _id } =
     props.proyectData;
-
+    
   return (
     <div className="proyect">
-      <img className="proyect__img" src={proyectPic} alt={proyectName} />
+      <img
+        className="proyect__img"
+        src={proyectPic || predetermined}
+        alt={proyectName}
+      />
       <h3 className="proyect__name">{proyectName}</h3>
       <div className="proyect__info-container">
         <div className="proyect__info">
@@ -25,6 +31,19 @@ export default function Proyect(props) {
         <div className="proyect__info">
           <h4 className="proyect__key">{text.colaborators}</h4>
           <p className="proyect__value">{colaborators.length}</p>
+        </div>
+        <div className="proyect__btns">
+          <Link
+            to={`/proyect/${_id}`}
+            className={`proyect__btn ${currentUser._id === owner || 'hidden'}`}
+          >
+            {text.editBtn}
+          </Link>
+          <button
+            className={`proyect__btn ${currentUser._id === owner || 'hidden'}`}
+          >
+            {text.deleteBtn}
+          </button>
         </div>
       </div>
     </div>

@@ -82,8 +82,6 @@ class Api {
     this._specificUrl = 'users/create';
     this._options.method = 'PATCH';
     this._options.body = JSON.stringify({ proyectId });
-    console.log(proyectId);
-    console.log(this);
     return this._fetchData();
   }
 
@@ -93,6 +91,15 @@ class Api {
     delete this._options._body;
     return this._fetchData();
   }
+
+  getMyProyects() {
+    this._specificUrl = 'proyects/created';
+    this._options.method = 'GET';
+    delete this._options._body;
+    return this._fetchData();
+  }
+
+  changeProyectInfo(e) {}
 }
 
 export default new Api();

@@ -3,9 +3,15 @@ import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
 
-export default function Sidebar() {
+export default function Sidebar(props) {
+  const { onMyProyectsRenderer } = props;
   const currentUser = React.useContext(CurrentUserContext);
   const text = React.useContext(TextContext);
+
+  function handleMyProyectsRenderer(e) {
+    e.preventDefault();
+    onMyProyectsRenderer();
+  }
 
   return (
     <section className="sidebar">
@@ -43,8 +49,8 @@ export default function Sidebar() {
           } ${text.proyectsCountText}`}</p>
         </div>
       </div>
-      <Link to={`../users/${currentUser._id}`}>Edit</Link>
-      <button>My proyects</button>
+      <Link to={`../users/${currentUser._id}`}>{text.editBtn}</Link>
+      <button onClick={handleMyProyectsRenderer}>{text.myProyectsBtn}</button>
     </section>
   );
 }
