@@ -43,18 +43,19 @@ class Api {
   }
 
   createProyect(data) {
+    const { proyectName, description, discipline, city } = data;
     this._specificUrl = 'proyects';
     this._options.method = 'POST';
     this._options.body = JSON.stringify({
-      proyectName: data.proyectName,
-      description: data.description,
-      discipline: data.discipline,
+      proyectName,
+      description,
+      city,
+      discipline,
     });
     return this._fetchData();
   }
 
   changeUserInfo(data) {
-    console.log(this);
     const { username, city, description, discipline, password, profilePic } =
       data;
     this._specificUrl = 'users/me';
@@ -67,6 +68,22 @@ class Api {
       password,
       profilePic,
     });
+    return this._fetchData();
+  }
+
+  changeUserColaborationsInfo(proyectId) {
+    this._specificUrl = 'users/colaborate';
+    this._options.method = 'PATCH';
+    this._options.body = JSON.stringify({ proyectId });
+    return this._fetchData();
+  }
+
+  changeUserCreatedInfo(proyectId) {
+    this._specificUrl = 'users/create';
+    this._options.method = 'PATCH';
+    this._options.body = JSON.stringify({ proyectId });
+    console.log(proyectId);
+    console.log(this);
     return this._fetchData();
   }
 

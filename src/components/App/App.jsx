@@ -23,11 +23,13 @@ import balletImg from '../../images/ballet.jpg';
 import balletDancerImg from '../../images/ballet-woman.jpg';
 import brushImg from '../../images/brush.jpg';
 import Sidebar from '../Sidebar/Sidebar';
+import PopupWithConfirmation from '../PopupWithConfirmation/PopupWithConfirmation';
+import Navigation from '../Navigation/Navigation';
 
 function App() {
   const { useState } = React;
   const [popupName, setPopupName] = useState('login');
-  const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isPopupOpen, setPopupOpen] = useState(true);
   const [jwt, setJwt] = useState('');
   const [isAuthorized, setAuthorized] = useState(false);
   const [searchInput, setSearchInput] = React.useState('');
@@ -35,28 +37,34 @@ function App() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [userDiscipline, setUserDiscipline] = useState('');
-  const [userDescription, setUserDescription] = useState('');
-  const [userCity, setUserCity] = useState('');
-  const [colaboratingInProyects, setcolaboratingInProyects] = useState('');
-  const [createdProyects, setCreatedProyects] = useState('');
+  const [discipline, setDiscipline] = useState('');
+  const [description, setDescription] = useState('');
+  const [city, setCity] = useState('');
   const [currentUser, setCurrentUser] = useState('');
-  const [currentProyectName, setCurrentProyectName] = useState('');
-  const [currentProyectDescription, setCurrentProyectDescription] =
-    useState('');
-  const [currentProyectDiscipline, setCurrentProyectDiscipline] = useState('');
-  const [currentProyectCity, setCurrentProyectCity] = useState('');
+  const [proyectName, setProyectName] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [text, setText] = useState(translationApi.spanishObject);
   const [disciplines, setDisciplines] = useState(translationApi.disciplines);
   const [translated, setTranslated] = useState(false);
+  const [popupError, setPopupError] = useState(false);
+  const [isPopupWithConfirmationOpen, setPopupWithConfirmationOpen] =
+    useState(false);
+  const [proyects, setProyects] = useState('');
 
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
 
   function handleError(err) {
     console.error(err);
+    setPopupError(true);
+    setPopupOpen(true);
     setLoading(false);
+  }
+
+  function handleSuccess() {
+    setLoading(false);
+    setPopupError(false);
+    setPopupOpen(true);
   }
 
   React.useEffect(() => {
@@ -89,10 +97,10 @@ function App() {
         try {
           setLoading(true);
           const userInfo = await api.getUserInfo(jwt);
-          // , api.getInitialCards()])
-          // .then(([userInfo, cards]) => {
+          const initialProyects = await api.getInitialProyects();
           setCurrentUser(userInfo.currentUser);
-          // setCards(cards.cards);
+          setProyects(initialProyects);
+
           setLoading(false);
         } catch (err) {
           console.error(err);
@@ -105,17 +113,29 @@ function App() {
     if (jwt) navigation.current('/home');
   }, [jwt, navigation]);
 
+  function handleClosePopup() {
+    setPopupOpen(false);
+  }
+
+  function handleClosePopupWithConfirmation() {
+    setPopupWithConfirmationOpen(false);
+  }
+
+  function handleOpenPopupWithConfirmation() {
+    setPopupWithConfirmationOpen(true);
+  }
+
   async function handleUserRegistration() {
     try {
       setLoading(true);
-      const data = await register(username, email, password, userDiscipline);
+      const data = await register(username, email, password, discipline);
       if (data.token) {
         localStorage.setItem('jwt', data.token);
         setJwt(data.token);
         setPassword('');
         navigate('/home', { replace: true });
         setAuthorized(true);
-        setLoading(false);
+        handleSuccess();
       } else {
         throw new Error('Algo salió mal');
       }
@@ -133,10 +153,10 @@ function App() {
         setPassword('');
         navigate('/home', { replace: true });
         setAuthorized(true);
+        handleSuccess();
       } else {
         throw new Error('Algo salió mal');
       }
-      setLoading(false);
     } catch (err) {
       handleError(err);
     }
@@ -147,20 +167,20 @@ function App() {
       setLoading(true);
       const data = await api.changeUserInfo({
         username,
-        city: userCity,
-        description: userDescription,
-        discipline: userDiscipline,
+        city,
+        description,
+        discipline,
         password,
         profilePic,
       });
-      setPassword('');
+
       if (data) {
         setCurrentUser(data.user);
         navigate('/home', { replace: true });
+        handleSuccess();
       } else {
         throw new Error('Algo salió mal');
       }
-      setLoading(false);
     } catch (err) {
       handleError(err);
     }
@@ -175,9 +195,25 @@ function App() {
 
   async function handleDeleteUser() {
     try {
-      const user = await api.deleteUser(currentUser._id);
-      console.log(user);
+      await api.deleteUser(currentUser._id);
       handleLogout();
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleCreateProyect() {
+    try {
+      setLoading(true);
+      const proyectData = await api.createProyect({
+        city,
+        proyectName,
+        description,
+        discipline,
+      });
+      await api.changeUserCreatedInfo(proyectData.proyect._id);
+      navigate('/home', { replace: true });
+      handleSuccess();
     } catch (err) {
       handleError(err);
     }
@@ -221,31 +257,19 @@ function App() {
   }
 
   function handleDescriptionChange(e) {
-    setUserDescription(e.target.value);
+    setDescription(e.target.value);
   }
 
   function handleCityChange(e) {
-    setUserCity(e.target.value);
+    setCity(e.target.value);
   }
 
-  function handleUserDiscipline(e) {
-    setUserDiscipline(e.target.value);
+  function handleDisciplineChange(e) {
+    setDiscipline(e.target.value);
   }
 
-  function handleCurrentProyectDiscipline(e) {
-    setCurrentProyectDiscipline(e.target.value);
-  }
-
-  function handleCurrentProyectDescriptionChange(e) {
-    setCurrentProyectDescription(e.target.value);
-  }
-
-  function handleCurrentProyectNameChange(e) {
-    setCurrentProyectName(e.target.value);
-  }
-
-  function handleCurrentProyectCityChange(e) {
-    setCurrentProyectCity(e.target.value);
+  function handleProyectNameChange(e) {
+    setProyectName(e.target.value);
   }
 
   function handleSearchInputChange(e) {
@@ -301,7 +325,7 @@ function App() {
                       {
                         name: 'discipline',
                         title: text.discipline,
-                        onChange: handleUserDiscipline,
+                        onChange: handleDisciplineChange,
                       },
                     ]}
                     formName="Register"
@@ -354,7 +378,7 @@ function App() {
               element={
                 <>
                   <Sidebar />
-                  <Main />
+                  <Main proyects={proyects} />
                 </>
               }
             />
@@ -395,13 +419,13 @@ function App() {
                       {
                         title: text.discipline,
                         name: 'discipline',
-                        onChange: handleUserDiscipline,
+                        onChange: handleDisciplineChange,
                       },
                     ]}
                     img={profilePic ? profilePic : graffitiImg}
                     submitText="Edit"
                     onSubmit={handleEditUser}
-                    onDelete={handleDeleteUser}
+                    openPopupWithConfirmation={handleOpenPopupWithConfirmation}
                     disciplines={disciplines}
                   />
                   <BackgroundImg src={graffitiImg} />
@@ -420,31 +444,32 @@ function App() {
                         name: 'proyectName',
                         type: 'text',
                         title: text.proyect,
-                        onChange: handleCurrentProyectNameChange,
+                        onChange: handleProyectNameChange,
                       },
                       {
                         name: 'proyectDescription',
                         type: 'text',
                         modifier: 'form__input_large',
                         title: text.description,
-                        onChange: handleCurrentProyectDescriptionChange,
+                        onChange: handleDescriptionChange,
                       },
                       {
                         name: 'proyectCity',
                         type: 'text',
                         title: text.city,
-                        onChange: handleCurrentProyectCityChange,
+                        onChange: handleCityChange,
                       },
                       {
                         name: 'proyectDiscipline',
                         type: 'text',
                         title: text.discipline,
-                        onChange: handleCurrentProyectDiscipline,
+                        onChange: handleDisciplineChange,
                       },
                     ]}
                     formName="Create a new proyect"
                     submitText={text.createBtn}
                     disciplines={disciplines}
+                    onSubmit={handleCreateProyect}
                   />
 
                   <BackgroundImg src={brushImg} />
@@ -460,29 +485,37 @@ function App() {
                     elements={[
                       {
                         key: text.proyect,
-                        value: currentProyectName,
+                        value: proyectName,
                       },
                       {
                         key: text.description,
-                        value: currentProyectDescription,
+                        value: description,
                         modifier: 'presentation__input_large',
                         isLarge: true,
                       },
                       {
                         key: text.city,
-                        value: currentProyectCity,
+                        value: city,
                       },
                       { key: text.colaborators, value: 30 },
                     ]}
                     submitText={text.colaborateBtn}
-                    // disciplines={disciplines}
                   />
                   <BackgroundImg src={balletDancerImg} />
                 </>
               }
             />
           </Routes>
-          <Popup popupName={popupName} isPopupOpen={isPopupOpen} />
+          <Popup
+            popupError={popupError}
+            isPopupOpen={isPopupOpen}
+            onClose={handleClosePopup}
+          />
+          <PopupWithConfirmation
+            isOpen={isPopupWithConfirmationOpen}
+            onClose={handleClosePopupWithConfirmation}
+            onDelete={handleDeleteUser}
+          />
           <Footer />
         </div>
       </TextContext.Provider>

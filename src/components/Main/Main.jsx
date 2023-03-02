@@ -1,91 +1,17 @@
 import React from 'react';
-import pic from '../../images/graffiti.jpg';
+import { Link } from 'react-router-dom';
 import Proyect from '../Proyect/Proyect';
 
-const proyects = [
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 1,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 2,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 3,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 4,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 5,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 6,
-  },
-  {
-    name: 'Obscenos de Silere/Vórtex',
-    discipline: 'teatro',
-    year: '2023',
-    colaborators: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-    img: pic,
-    creator: 'El Julián',
-    _id: 7,
-  },
-];
+export default function Main(props) {
+  const { proyects } = props;
 
-export default function Main() {
-  return (
-    <section className="main">
-      {proyects.map((proyect) => {
-        const { _id, img, name, discipline, creator, colaborators } = proyect;
-        return (
-          <Proyect
-            name={name}
-            key={_id}
-            img={img}
-            id={_id}
-            discipline={discipline}
-            creator={creator}
-            colaborators={colaborators}
-          />
-        );
-      })}
-      <button>Agregar</button>
-    </section>
-  );
+  if (proyects.length >= 1)
+    return (
+      <section className="main">
+        {proyects.map((proyectData) => {
+          return <Proyect proyectData={proyectData} key={proyectData._id} />;
+        })}
+        <Link to="/proyect/register">Agregar</Link>
+      </section>
+    );
 }

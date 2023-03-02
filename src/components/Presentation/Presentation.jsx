@@ -1,11 +1,19 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import trashBtn from '../../images/trash-btn.svg';
 
 export default function Presentation(props) {
   const currentUser = React.useContext(CurrentUserContext);
-  const { elements, submitText, img, onSubmit, onDelete, disciplines } = props;
+  const {
+    elements,
+    submitText,
+    img,
+    onSubmit,
+    name,
+    setPresentationName,
+    disciplines,
+    openPopupWithConfirmation,
+  } = props;
   const { id } = useParams();
   const [isMe, setIsMe] = React.useState(false);
 
@@ -24,7 +32,8 @@ export default function Presentation(props) {
 
   const handleDelete = function (e) {
     e.preventDefault();
-    onDelete();
+    setPresentationName(name);
+    openPopupWithConfirmation();
   };
 
   function disciplineRenderer(element) {
@@ -97,10 +106,7 @@ export default function Presentation(props) {
 
   return (
     <form className="presentation">
-      <button
-        className="presentation__trash-btn"
-        onClick={handleDelete}
-      ></button>
+      <button className="presentation__trash-btn" onClick={handleDelete} />
       <img
         src={img}
         alt="Imagen de perfil"

@@ -41,7 +41,6 @@
   margin: 0 auto 10px;
   height: 25px;
   position: relative;
-  z-index: 3;
 }
 
 .form__input::placeholder {
