@@ -313,6 +313,34 @@ function App() {
     }
   }
 
+  async function handleSearch() {
+    try {
+      if (searchInput === '') return;
+      setLoading(true);
+      const proyects = await api.getProyects();
+      const filteredProyects = proyects.filter((proyect) => {
+        return (
+          proyect.proyectName
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
+          proyect.description
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
+          proyect.discipline
+            .toLowerCase()
+            .includes(searchInput.toLowerCase()) ||
+          proyect.city.toLowerCase().includes(searchInput.toLowerCase())
+        );
+      });
+      setProyects(filteredProyects);
+      navigate('/home');
+      setLoading(false);
+    } catch (err) {
+      handleError(err);
+    }
+    setLoading(false);
+  }
+
   async function handleLanguageChangeEn() {
     try {
       if (!translated) {
@@ -385,6 +413,7 @@ function App() {
             onAllProyectsRenderer={handleAllProyectsRenderer}
             onChange={handleSearchInputChange}
             onLogout={handleLogout}
+            onSubmit={handleSearch}
           />
           <Preloader isLoading={isLoading} />
           <Routes>

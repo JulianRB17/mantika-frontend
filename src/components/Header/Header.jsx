@@ -11,6 +11,7 @@ export default function Header(props) {
     onLanguageChangeEs,
     onLogout,
     onAllProyectsRenderer,
+    onSubmit,
   } = props;
 
   function handleLanguageChangeEn(e) {
@@ -41,6 +42,7 @@ export default function Header(props) {
         isAuthorized={isAuthorized}
         onChange={onChange}
         onLogout={onLogout}
+        onSubmit={onSubmit}
       />
     </section>
   );

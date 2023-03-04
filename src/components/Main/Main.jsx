@@ -18,7 +18,7 @@ export default function Main(props) {
             />
           );
         })}
-        <Link to="/proyect/register">Agregar</Link>
+        <Link to="/proyect/create">Agregar</Link>
       </section>
     );
 }

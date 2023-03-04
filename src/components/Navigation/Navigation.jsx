@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import searchIcon from '../../images/search-icon.svg';
 
@@ -10,8 +10,11 @@ export default function Navigation(props) {
     onChange,
     onLogout,
     onAllProyectsRenderer,
+    onSubmit,
   } = props;
   const currentUser = React.useContext(CurrentUserContext);
+
+  const navigate = useNavigate();
 
   function handleLogout(e) {
     e.preventDefault();
@@ -21,6 +24,12 @@ export default function Navigation(props) {
   function handleAllProyectsRenderer(e) {
     e.preventDefault();
     onAllProyectsRenderer();
+    navigate('/home');
+  }
+
+  function handleSearch(e) {
+    e.preventDefault();
+    onSubmit();
   }
 
   if (isAuthorized) {
@@ -29,7 +38,6 @@ export default function Navigation(props) {
         <div className="navigation__links-container">
           <NavLink
             className="navigation__link"
-            to="/home"
             onClick={handleAllProyectsRenderer}
           >
             Home
@@ -43,11 +51,14 @@ export default function Navigation(props) {
           >
             {currentUser.username}
           </NavLink>
-          <button className="navigation__link" to="/" onClick={handleLogout}>
+          <NavLink className="navigation__link" to="/" onClick={handleLogout}>
             Logout
-          </button>
+          </NavLink>
         </div>
-        <div className="navigation__searchbar-container">
+        <form
+          className="navigation__searchbar-container"
+          onSubmit={handleSearch}
+        >
           <input
             type="search"
             placeholder="Search proyect"
@@ -55,12 +66,14 @@ export default function Navigation(props) {
             value={searchInput}
             className="navigation__searchbar"
           />
-          <img
-            src={searchIcon}
-            className="navigation__btn"
-            alt="nagigation lookup icon"
-          />
-        </div>
+          <button className="navigation__btn">
+            <img
+              src={searchIcon}
+              className="navigation__btn-img"
+              alt="nagigation lookup icon"
+            />
+          </button>
+        </form>
       </section>
     );
   } else {
