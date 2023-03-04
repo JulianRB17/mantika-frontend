@@ -12,6 +12,7 @@
 .proyect__img {
   object-fit: cover;
   height: 200px;
+  width: 100%;
 }
 
 .proyect__info-container {

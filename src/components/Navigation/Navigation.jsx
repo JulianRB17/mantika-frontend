@@ -4,7 +4,13 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import searchIcon from '../../images/search-icon.svg';
 
 export default function Navigation(props) {
-  const { isAuthorized, searchInput, onChange, onLogout } = props;
+  const {
+    isAuthorized,
+    searchInput,
+    onChange,
+    onLogout,
+    onAllProyectsRenderer,
+  } = props;
   const currentUser = React.useContext(CurrentUserContext);
 
   function handleLogout(e) {
@@ -12,11 +18,20 @@ export default function Navigation(props) {
     onLogout();
   }
 
+  function handleAllProyectsRenderer(e) {
+    e.preventDefault();
+    onAllProyectsRenderer();
+  }
+
   if (isAuthorized) {
     return (
       <section className="navigation">
         <div className="navigation__links-container">
-          <NavLink className="navigation__link" to="/home">
+          <NavLink
+            className="navigation__link"
+            to="/home"
+            onClick={handleAllProyectsRenderer}
+          >
             Home
           </NavLink>
           <NavLink className="navigation__link" to="/about">

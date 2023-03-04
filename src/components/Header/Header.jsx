@@ -10,6 +10,7 @@ export default function Header(props) {
     onLanguageChangeEn,
     onLanguageChangeEs,
     onLogout,
+    onAllProyectsRenderer,
   } = props;
 
   function handleLanguageChangeEn(e) {
@@ -36,6 +37,7 @@ export default function Header(props) {
         </button>
       </div>
       <Navigation
+        onAllProyectsRenderer={onAllProyectsRenderer}
         isAuthorized={isAuthorized}
         onChange={onChange}
         onLogout={onLogout}

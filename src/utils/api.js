@@ -39,7 +39,7 @@ class Api {
     this._specificUrl = `proyects/${id} `;
     this._options.method = 'DELETE';
     delete this._options.body;
-    return this._fetchData().then(() => id);
+    return this._fetchData();
   }
 
   createProyect(data) {
@@ -55,7 +55,7 @@ class Api {
     return this._fetchData();
   }
 
-  changeUserInfo(data) {
+  updateUserInfo(data) {
     const { username, city, description, discipline, password, profilePic } =
       data;
     this._specificUrl = 'users/me';
@@ -71,35 +71,61 @@ class Api {
     return this._fetchData();
   }
 
-  changeUserColaborationsInfo(proyectId) {
+  updateUserColaborationsInfo(proyectId) {
     this._specificUrl = 'users/colaborate';
     this._options.method = 'PATCH';
     this._options.body = JSON.stringify({ proyectId });
     return this._fetchData();
   }
 
-  changeUserCreatedInfo(proyectId) {
+  updateUserCreatedInfo(proyectId) {
     this._specificUrl = 'users/create';
     this._options.method = 'PATCH';
     this._options.body = JSON.stringify({ proyectId });
     return this._fetchData();
   }
 
-  getInitialProyects() {
+  getProyects() {
     this._specificUrl = 'proyects';
     this._options.method = 'GET';
-    delete this._options._body;
+    delete this._options.body;
     return this._fetchData();
   }
 
   getMyProyects() {
     this._specificUrl = 'proyects/created';
     this._options.method = 'GET';
-    delete this._options._body;
+    delete this._options.body;
     return this._fetchData();
   }
 
-  changeProyectInfo(e) {}
+  getProyect(id) {
+    this._specificUrl = `proyects/${id}`;
+    this._options.method = 'GET';
+    delete this._options.body;
+    return this._fetchData();
+  }
+
+  updateProyectInfo(data, id) {
+    const { proyectName, description, city, discipline, proyectPic } = data;
+    this._specificUrl = `proyects/${id}`;
+    this._options.method = 'PATCH';
+    this._options.body = JSON.stringify({
+      proyectName,
+      description,
+      city,
+      discipline,
+      proyectPic,
+    });
+    return this._fetchData();
+  }
+
+  updateProyectColaborations(proyectId) {
+    this._specificUrl = `proyects/colaborate/${proyectId}`;
+    this._options.method = 'PATCH';
+    delete this._options.body;
+    return this._fetchData();
+  }
 }
 
 export default new Api();

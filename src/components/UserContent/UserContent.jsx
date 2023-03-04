@@ -2,15 +2,13 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
-export default function Presentation(props) {
+export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const {
     elements,
     submitText,
     img,
     onSubmit,
-    name,
-    setPresentationName,
     disciplines,
     openPopupWithConfirmation,
   } = props;
@@ -32,7 +30,6 @@ export default function Presentation(props) {
 
   const handleDelete = function (e) {
     e.preventDefault();
-    setPresentationName(name);
     openPopupWithConfirmation();
   };
 
@@ -40,7 +37,7 @@ export default function Presentation(props) {
     return (
       <select
         required
-        className="presentation__input presentation__info-value"
+        className="user-content__input user-content__info-value"
         name="discipline"
         key={elements.indexOf(element)}
         onChange={element.onChange}
@@ -61,7 +58,7 @@ export default function Presentation(props) {
   function largeInputRenderer(element) {
     return (
       <textarea
-        className={`presentation__info-value presentation__input ${
+        className={`user-content__info-value user-content__input ${
           element.modifier || ''
         }`}
         placeholder={currentUser[element.value]}
@@ -73,7 +70,7 @@ export default function Presentation(props) {
   const inputRenderer = function (element) {
     return (
       <input
-        className={`presentation__info-value presentation__input ${
+        className={`user-content__info-value user-content__input ${
           element.modifier || ''
         }`}
         placeholder={currentUser[element.value]}
@@ -84,8 +81,8 @@ export default function Presentation(props) {
 
   function paragraphRenderer(element) {
     return (
-      <p className={`presentation__info-value ${element.modifier || ''}`}>
-        {currentUser[element.value] || 0}
+      <p className={`user-content__info-value ${element.modifier || ''}`}>
+        {currentUser[element.value] || '-'}
       </p>
     );
   }
@@ -97,7 +94,7 @@ export default function Presentation(props) {
     if (isMe && element.isInput) {
       return inputRenderer(element);
     }
-    if (element.name === 'discipline') {
+    if (element.name === 'discipline' && isMe) {
       return disciplineRenderer(element);
     } else {
       return paragraphRenderer(element);
@@ -105,28 +102,28 @@ export default function Presentation(props) {
   }
 
   return (
-    <form className="presentation">
-      <button className="presentation__trash-btn" onClick={handleDelete} />
+    <form className="user-content">
+      <button className="user-content__trash-btn" onClick={handleDelete} />
       <img
         src={img}
         alt="Imagen de perfil"
-        className="presentation__profile-img"
+        className="user-content__profile-img"
       />
-      <div className="presentation__info-container">
+      <div className="user-content__info-container">
         {elements.map((element) => {
           return (
             <div
-              className="presentation__info-element"
+              className="user-content__info-element"
               key={elements.indexOf(element)}
             >
-              <h2 className="presentation__info-key">{element.title}</h2>
+              <h2 className="user-content__info-key">{element.title}</h2>
               {elementRenderer(element)}
             </div>
           );
         })}
       </div>
 
-      <button className="presentation__submit-btn" onClick={handleSubmit}>
+      <button className="user-content__submit-btn" onClick={handleSubmit}>
         {submitText}
       </button>
     </form>

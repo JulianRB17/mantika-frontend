@@ -7,7 +7,6 @@ import About from '../About/About';
 import Popup from '../Popup/Popup';
 import Footer from '../Footer/Footer';
 import Main from '../Main/Main';
-import Presentation from '../Presentation/Presentation';
 import BackgroundImg from '../BackgroundImg/BackgroundImg';
 import Preloader from '../Preloader/Preloader';
 import './app.css';
@@ -24,7 +23,8 @@ import balletDancerImg from '../../images/ballet-woman.jpg';
 import brushImg from '../../images/brush.jpg';
 import Sidebar from '../Sidebar/Sidebar';
 import PopupWithConfirmation from '../PopupWithConfirmation/PopupWithConfirmation';
-import Navigation from '../Navigation/Navigation';
+import UserContent from './../UserContent/UserContent';
+import ProyectContent from './../ProyectContent/ProyectContent';
 
 function App() {
   const { useState } = React;
@@ -48,9 +48,14 @@ function App() {
   const [disciplines, setDisciplines] = useState(translationApi.disciplines);
   const [translated, setTranslated] = useState(false);
   const [popupError, setPopupError] = useState(false);
-  const [isPopupWithConfirmationOpen, setPopupWithConfirmationOpen] =
+  const [isUserPopupWithConfirmationOpen, setUserPopupWithConfirmationOpen] =
     useState(false);
+  const [
+    isProyectPopupWithConfirmationOpen,
+    setProyectPopupWithConfirmationOpen,
+  ] = useState(false);
   const [proyects, setProyects] = useState('');
+  const [selectedProyect, setSelectedProyect] = useState('');
 
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
@@ -98,10 +103,9 @@ function App() {
         try {
           setLoading(true);
           const userInfo = await api.getUserInfo(jwt);
-          const initialProyects = await api.getInitialProyects();
+          const initialProyects = await api.getProyects();
           setCurrentUser(userInfo.currentUser);
           setProyects(initialProyects);
-
           setLoading(false);
         } catch (err) {
           console.error(err);
@@ -119,11 +123,16 @@ function App() {
   }
 
   function handleClosePopupWithConfirmation() {
-    setPopupWithConfirmationOpen(false);
+    setUserPopupWithConfirmationOpen(false);
+    setProyectPopupWithConfirmationOpen(false);
   }
 
-  function handleOpenPopupWithConfirmation() {
-    setPopupWithConfirmationOpen(true);
+  function handleOpenUserPopupWithConfirmation() {
+    setUserPopupWithConfirmationOpen(true);
+  }
+
+  function handleOpenProyectPopupWithConfirmation() {
+    setProyectPopupWithConfirmationOpen(true);
   }
 
   async function handleUserRegistration() {
@@ -166,7 +175,7 @@ function App() {
   async function handleEditUser() {
     try {
       setLoading(true);
-      const data = await api.changeUserInfo({
+      const data = await api.updateUserInfo({
         username,
         city,
         description,
@@ -203,23 +212,6 @@ function App() {
     }
   }
 
-  async function handleCreateProyect() {
-    try {
-      setLoading(true);
-      const proyectData = await api.createProyect({
-        city,
-        proyectName,
-        description,
-        discipline,
-      });
-      await api.changeUserCreatedInfo(proyectData.proyect._id);
-      navigate('/home', { replace: true });
-      handleSuccess();
-    } catch (err) {
-      handleError(err);
-    }
-  }
-
   async function handleMyProyectsRenderer() {
     try {
       setLoading(true);
@@ -234,7 +226,7 @@ function App() {
   async function handleAllProyectsRenderer() {
     try {
       setLoading(true);
-      const proyects = await api.getInitialProyects();
+      const proyects = await api.getProyects();
       setProyects(proyects);
       setLoading(false);
     } catch (err) {
@@ -242,30 +234,80 @@ function App() {
     }
   }
 
-  async function handleEditProyect() {
-    // try {
-    //   setLoading(true);
-    //   const data = await api.changeProyectInfo({
-    //     proyectName,
-    //     city,
-    //     description,
-    //     discipline,
-    //     proyectPic,
-    //   });
-    //   if (data) {
-    //     setCurrentUser(data.user);
-    //     navigate('/home', { replace: true });
-    //     handleSuccess();
-    //   } else {
-    //     throw new Error('Algo salió mal');
-    //   }
-    // } catch (err) {
-    //   handleError(err);
-    // }
+  async function handleCreateProyect() {
+    try {
+      setLoading(true);
+      const proyectData = await api.createProyect({
+        city,
+        proyectName,
+        description,
+        discipline,
+      });
+      await api.updateUserCreatedInfo(proyectData.proyect._id);
+      await handleAllProyectsRenderer();
+      navigate('/home', { replace: true });
+      handleSuccess();
+    } catch (err) {
+      handleError(err);
+    }
   }
 
-  async function handleGetProyect() {
+  async function handleEditProyect(id) {
     try {
+      setLoading(true);
+      const data = await api.updateProyectInfo(
+        {
+          proyectName,
+          city,
+          description,
+          discipline,
+          proyectPic,
+        },
+        id
+      );
+      if (data) {
+        await handleAllProyectsRenderer();
+        navigate('/home', { replace: true });
+        handleSuccess();
+      } else {
+        throw new Error('Algo salió mal');
+      }
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleGetProyect(id) {
+    try {
+      setLoading(true);
+      const data = await api.getProyect(id);
+      setLoading(false);
+      return data;
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleDeleteProyect() {
+    try {
+      setLoading(true);
+      await api.deleteProyect(selectedProyect);
+      handleAllProyectsRenderer();
+      navigate('/home', { replace: true });
+      handleSuccess();
+    } catch (err) {
+      handleError(err);
+    }
+  }
+
+  async function handleColaborate(proyectId) {
+    try {
+      setLoading(true);
+      await api.updateProyectColaborations(proyectId);
+      const user = await api.updateUserColaborationsInfo(proyectId);
+      console.log(user);
+      handleAllProyectsRenderer();
+      handleSuccess();
     } catch (err) {
       handleError(err);
     }
@@ -381,6 +423,7 @@ function App() {
                       },
                       {
                         name: 'discipline',
+                        type: 'discipline',
                         title: text.discipline,
                         onChange: handleDisciplineChange,
                       },
@@ -435,7 +478,13 @@ function App() {
               element={
                 <>
                   <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
-                  <Main proyects={proyects} />
+                  <Main
+                    proyects={proyects}
+                    openPopupWithConfirmation={
+                      handleOpenProyectPopupWithConfirmation
+                    }
+                    setSelectedProyect={setSelectedProyect}
+                  />
                 </>
               }
             />
@@ -443,7 +492,7 @@ function App() {
               path="/users/:id"
               element={
                 <>
-                  <Presentation
+                  <UserContent
                     elements={[
                       {
                         title: text.username,
@@ -452,9 +501,15 @@ function App() {
                         onChange: handleUsernameChange,
                       },
                       {
+                        title: text.discipline,
+                        value: 'discipline',
+                        name: 'discipline',
+                        onChange: handleDisciplineChange,
+                      },
+                      {
                         title: text.description,
                         value: 'description',
-                        modifier: 'presentation__input_large',
+                        modifier: 'user-content__input_large',
                         isInput: true,
                         isLarge: true,
                         onChange: handleDescriptionChange,
@@ -467,22 +522,19 @@ function App() {
                       },
                       {
                         title: text.createdProyects,
-                        value: 'createdProyects.length',
+                        value: 'createdProyects',
                       },
                       {
                         title: text.colaboratingIn,
-                        value: 'colaboratingInProyects.length',
-                      },
-                      {
-                        title: text.discipline,
-                        name: 'discipline',
-                        onChange: handleDisciplineChange,
+                        value: 'colaboratingInProyects',
                       },
                     ]}
                     img={profilePic ? profilePic : graffitiImg}
                     submitText="Edit"
                     onSubmit={handleEditUser}
-                    openPopupWithConfirmation={handleOpenPopupWithConfirmation}
+                    openPopupWithConfirmation={
+                      handleOpenUserPopupWithConfirmation
+                    }
                     disciplines={disciplines}
                   />
                   <BackgroundImg src={graffitiImg} />
@@ -537,25 +589,47 @@ function App() {
               path="/proyect/:id"
               element={
                 <>
-                  <Presentation
+                  <ProyectContent
                     img={balletDancerImg}
                     elements={[
                       {
-                        key: text.proyect,
-                        value: proyectName,
+                        title: text.proyect,
+                        value: 'proyectName',
+                        isInput: true,
+                        onChange: handleProyectNameChange,
                       },
                       {
-                        key: text.description,
-                        value: description,
-                        modifier: 'presentation__input_large',
+                        value: 'discipline',
+                        title: text.discipline,
+                        onChange: handleDisciplineChange,
+                      },
+                      {
+                        title: text.description,
+                        value: 'description',
+                        modifier: 'user-content__input_large',
+                        onChange: handleDescriptionChange,
                         isLarge: true,
+                        isInput: true,
                       },
                       {
-                        key: text.city,
-                        value: city,
+                        title: text.city,
+                        value: 'city',
+                        onChange: handleCityChange,
+                        isInput: true,
                       },
-                      { key: text.colaborators, value: 30 },
+                      {
+                        title: text.colaborators,
+                        value: 'colaborators',
+                      },
                     ]}
+                    onEdit={handleEditProyect}
+                    onGetProyect={handleGetProyect}
+                    onColaborate={handleColaborate}
+                    openPopupWithConfirmation={
+                      handleOpenProyectPopupWithConfirmation
+                    }
+                    disciplines={disciplines}
+                    setSelectedProyect={setSelectedProyect}
                     submitText={text.colaborateBtn}
                   />
                   <BackgroundImg src={balletDancerImg} />
@@ -569,9 +643,14 @@ function App() {
             onClose={handleClosePopup}
           />
           <PopupWithConfirmation
-            isOpen={isPopupWithConfirmationOpen}
+            isOpen={isUserPopupWithConfirmationOpen}
             onClose={handleClosePopupWithConfirmation}
             onDelete={handleDeleteUser}
+          />
+          <PopupWithConfirmation
+            isOpen={isProyectPopupWithConfirmationOpen}
+            onClose={handleClosePopupWithConfirmation}
+            onDelete={handleDeleteProyect}
           />
           <Footer />
         </div>

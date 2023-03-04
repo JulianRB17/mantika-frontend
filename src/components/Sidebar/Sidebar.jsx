@@ -12,7 +12,6 @@ export default function Sidebar(props) {
     e.preventDefault();
     onMyProyectsRenderer();
   }
-
   return (
     <section className="sidebar">
       <img

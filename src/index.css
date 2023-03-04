@@ -15,8 +15,9 @@
 @import url(./components/Main/main.css);
 @import url(./components/Sidebar/sidebar.css);
 @import url(./components/Proyects/proyects.css);
-@import url(./components/Presentation/presentation.css);
+@import url(./components/UserContent/userContent.css);
 @import url(./components/Proyect/proyect.css);
 @import url(./components/BackgroundImg/backgroundImg.css);
 @import url(./components/Preloader/preloader.css);
 @import url(./components/PopupWithConfirmation/popupWithConfirmation.css);
+@import url(./components/ProyectContent/ProyectContent.css);
