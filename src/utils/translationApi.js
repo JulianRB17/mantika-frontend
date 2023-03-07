@@ -55,6 +55,8 @@ class TanslationApi {
       editBtn: 'Editar',
       deleteBtn: 'Borrar',
       myProyectsBtn: 'Mis proyectos',
+      proyectsNotFound: 'No se encontraron proyectos',
+      proyectImage: 'Imagen',
     };
 
     this.disciplines = [

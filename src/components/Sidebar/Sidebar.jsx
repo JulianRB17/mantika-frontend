@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
+import defaultImg from '../../images/default.jpg';
 
 export default function Sidebar(props) {
   const { onMyProyectsRenderer } = props;
@@ -15,7 +16,7 @@ export default function Sidebar(props) {
   return (
     <section className="sidebar">
       <img
-        src={currentUser.profilePic}
+        src={currentUser.profilePic || defaultImg}
         alt="Imagen de perfil"
         className="sidebar__profile-img"
       />
@@ -48,8 +49,14 @@ export default function Sidebar(props) {
           } ${text.proyectsCountText}`}</p>
         </div>
       </div>
-      <Link to={`../users/${currentUser._id}`}>{text.editBtn}</Link>
-      <button onClick={handleMyProyectsRenderer}>{text.myProyectsBtn}</button>
+      <div className="sidebar__btns-container">
+        <Link to={`../users/${currentUser._id}`} className="sidebar__btn">
+          {text.editBtn}
+        </Link>
+        <button onClick={handleMyProyectsRenderer} className="sidebar__btn">
+          {text.myProyectsBtn}
+        </button>
+      </div>
     </section>
   );
 }

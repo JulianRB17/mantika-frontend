@@ -10,9 +10,19 @@ export default function Popup(props) {
     onClose();
   }
 
+  function handleKeyDown(e) {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  }
+
   return (
-    <section className={`popup ${isPopupOpen && 'popup_opened'}`}>
-      <div className="popup__overlay"></div>
+    <section
+      className={`popup ${isPopupOpen && 'popup_opened'}`}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
+      <div className="popup__overlay" onClick={handleClose}></div>
       <div className="popup__body">
         <button className="popup__close-btn" onClick={handleClose} />
         <img

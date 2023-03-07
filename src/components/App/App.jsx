@@ -11,7 +11,7 @@ import BackgroundImg from '../BackgroundImg/BackgroundImg';
 import Preloader from '../Preloader/Preloader';
 import './app.css';
 import translationApi from '../../utils/translationApi';
-import api from '../../utils/api';
+import { Api } from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
@@ -28,7 +28,6 @@ import ProyectContent from './../ProyectContent/ProyectContent';
 
 function App() {
   const { useState } = React;
-  const [popupName, setPopupName] = useState('login');
   const [isPopupOpen, setPopupOpen] = useState(true);
   const [jwt, setJwt] = useState('');
   const [isAuthorized, setAuthorized] = useState(false);
@@ -57,6 +56,7 @@ function App() {
   const [proyects, setProyects] = useState('');
   const [selectedProyect, setSelectedProyect] = useState('');
 
+  const api = new Api(jwt);
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
 
@@ -304,8 +304,7 @@ function App() {
     try {
       setLoading(true);
       await api.updateProyectColaborations(proyectId);
-      const user = await api.updateUserColaborationsInfo(proyectId);
-      console.log(user);
+      await api.updateUserColaborationsInfo(proyectId);
       handleAllProyectsRenderer();
       handleSuccess();
     } catch (err) {
@@ -512,6 +511,7 @@ function App() {
                     openPopupWithConfirmation={
                       handleOpenProyectPopupWithConfirmation
                     }
+                    getUser={() => api.getUser}
                     setSelectedProyect={setSelectedProyect}
                   />
                 </>
@@ -565,6 +565,7 @@ function App() {
                       handleOpenUserPopupWithConfirmation
                     }
                     disciplines={disciplines}
+                    getUser={() => api.getUser}
                   />
                   <BackgroundImg src={graffitiImg} />
                 </>
@@ -583,6 +584,12 @@ function App() {
                         type: 'text',
                         title: text.proyect,
                         onChange: handleProyectNameChange,
+                      },
+                      {
+                        name: 'proyectPic',
+                        type: text,
+                        title: text.proyectImage,
+                        onChange: handleProyectPicChange,
                       },
                       {
                         name: 'proyectDescription',

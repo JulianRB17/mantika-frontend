@@ -13,8 +13,19 @@ export default function PopupWithConfirmation(props) {
     onDelete();
     onClose();
   }
+
+  function handleKeyDown(e) {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  }
+
   return (
-    <section className={`popup ${isOpen && 'popup_opened'}`}>
+    <section
+      className={`popup ${isOpen && 'popup_opened'}`}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
       <div className="popup__overlay"></div>
       <div className="popup__body">
         <button className="popup__close-btn" onClick={handleClose} />

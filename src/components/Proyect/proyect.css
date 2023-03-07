@@ -13,6 +13,7 @@
   object-fit: cover;
   height: 200px;
   width: 100%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .proyect__info-container {
@@ -33,6 +34,16 @@
 
 .proyect__value {
   margin: 0;
+  max-width: 180px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-decoration: none;
+  color: rgba(26, 27, 34, 1);
+}
+
+.proyect__link {
+  color: blue;
 }
 
 .proyect__btns {
@@ -44,6 +55,15 @@
 .proyect__btn {
   padding: 4px 10px;
   font-size: 12px;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: aliceblue;
+  background-color: rgb(52, 14, 156);
+  text-shadow: none;
+  box-shadow: 0 0 10px 1px rgba(26, 27, 34, 1);
+  margin: 0;
+  border: 0;
 }
 
 @media screen and (max-width: 350px) {

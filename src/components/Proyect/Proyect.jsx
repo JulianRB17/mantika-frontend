@@ -3,14 +3,23 @@ import { Link } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
 import defaultImg from '../../images/default.jpg';
+import api from '../../utils/api';
 
 export default function Proyect(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const text = React.useContext(TextContext);
+  const [ownerObject, setOwnerObject] = React.useState('');
 
-  const { openPopupWithConfirmation, setSelectedProyect } = props;
+  const { openPopupWithConfirmation, setSelectedProyect, getUser } = props;
   const { proyectName, discipline, owner, proyectPic, colaborators, _id } =
     props.proyectData;
+
+  React.useState(() => {
+    (async () => {
+      const user = await getUser(owner);
+      setOwnerObject(user);
+    })();
+  });
 
   function handleDelete(e) {
     e.preventDefault();
@@ -35,8 +44,8 @@ export default function Proyect(props) {
         </div>
         <div className="proyect__info">
           <h4 className="proyect__key">{text.creator}</h4>
-          <Link to={`/users/${owner}`}>
-            <p className="proyect__value">{owner}</p>
+          <Link to={`/users/${owner}`} className="proyect__value proyect__link">
+            {ownerObject.username}
           </Link>
         </div>
         <div className="proyect__info">

@@ -47,6 +47,10 @@
   margin: 0 0 0 30px;
   font-size: 20px;
   line-height: 37px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
 }
 
 .user-content__input {

@@ -1,5 +1,5 @@
-class Api {
-  constructor() {
+export class Api {
+  constructor(jwt) {
     this._baseUrl = 'http://127.0.0.1:3001/';
     this._options = {
       headers: {
@@ -7,10 +7,10 @@ class Api {
         Accept: 'application/json, text/plain, */*',
       },
     };
+    if (jwt) this._options.headers.authorization = `Bearer ${jwt}`;
   }
 
   _fetchData() {
-    if (this._jwt) this._options.headers.authorization = `Bearer ${this._jwt}`;
     return fetch(this._baseUrl + this._specificUrl, this._options)
       .then((res) => {
         if (res.ok) return res.json();
@@ -19,20 +19,26 @@ class Api {
       .catch((err) => console.error(err));
   }
 
-  getUserInfo(jwt) {
-    this._jwt = jwt;
+  getUserInfo() {
+    // this._jwt = jwt;
     this._specificUrl = 'users/me';
     this._options.method = 'GET';
     delete this._options.body;
     return this._fetchData();
   }
 
-  async deleteUser(id) {
+  getUser(id) {
+    this._specificUrl = `users/${id} `;
+    this._options.method = 'GET';
+    delete this._options.body;
+    return this._fetchData();
+  }
+
+  deleteUser(id) {
     this._specificUrl = `users/${id} `;
     this._options.method = 'DELETE';
     delete this._options.body;
-    const deltedUser = await this._fetchData();
-    return deltedUser;
+    return this._fetchData();
   }
 
   deleteProyect(id) {
@@ -127,5 +133,3 @@ class Api {
     return this._fetchData();
   }
 }
-
-export default new Api();

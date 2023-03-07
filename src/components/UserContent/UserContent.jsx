@@ -4,6 +4,8 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 
 export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
+  const [user, setUser] = React.useState('');
+
   const {
     elements,
     submitText,
@@ -11,18 +13,24 @@ export default function UserContent(props) {
     onSubmit,
     disciplines,
     openPopupWithConfirmation,
+    getUser,
   } = props;
   const { id } = useParams();
+
   const [isMe, setIsMe] = React.useState(false);
 
   React.useEffect(() => {
-    if (currentUser._id === id) {
-      setIsMe(true);
-    } else {
-      setIsMe(false);
-    }
-  }, [currentUser, id]);
-
+    (async () => {
+      if (currentUser._id === id) {
+        setUser(currentUser);
+        setIsMe(true);
+      } else {
+        const selectedUser = await getUser(id);
+        setUser(selectedUser);
+        setIsMe(false);
+      }
+    })();
+  }, []);
   function handleSubmit(e) {
     e.preventDefault();
     onSubmit();
@@ -33,6 +41,19 @@ export default function UserContent(props) {
     openPopupWithConfirmation();
   };
 
+  function colaborationRenderer(element) {
+    if (
+      element.value === 'createdProyects' ||
+      element.value === 'colaboratingInProyects'
+    ) {
+      return `${user[element.value].length} proyectos`;
+    }
+    if (user[element.value]) {
+      return user[element.value];
+    }
+    return '-';
+  }
+
   function disciplineRenderer(element) {
     return (
       <select
@@ -41,8 +62,8 @@ export default function UserContent(props) {
         name="discipline"
         key={elements.indexOf(element)}
         onChange={element.onChange}
-        defaultValue={currentUser.discipline}
-        placeholder={currentUser.discipline}
+        defaultValue={user.discipline}
+        placeholder={user.discipline}
       >
         {disciplines.map((discipline) => {
           return (
@@ -61,7 +82,7 @@ export default function UserContent(props) {
         className={`user-content__info-value user-content__input ${
           element.modifier || ''
         }`}
-        placeholder={currentUser[element.value]}
+        placeholder={user[element.value]}
         onChange={element.onChange}
       />
     );
@@ -73,7 +94,7 @@ export default function UserContent(props) {
         className={`user-content__info-value user-content__input ${
           element.modifier || ''
         }`}
-        placeholder={currentUser[element.value]}
+        placeholder={user[element.value]}
         onChange={element.onChange}
       />
     );
@@ -82,7 +103,7 @@ export default function UserContent(props) {
   function paragraphRenderer(element) {
     return (
       <p className={`user-content__info-value ${element.modifier || ''}`}>
-        {currentUser[element.value] || '-'}
+        {colaborationRenderer(element)}
       </p>
     );
   }
@@ -101,31 +122,32 @@ export default function UserContent(props) {
     }
   }
 
-  return (
-    <form className="user-content">
-      <button className="user-content__trash-btn" onClick={handleDelete} />
-      <img
-        src={img}
-        alt="Imagen de perfil"
-        className="user-content__profile-img"
-      />
-      <div className="user-content__info-container">
-        {elements.map((element) => {
-          return (
-            <div
-              className="user-content__info-element"
-              key={elements.indexOf(element)}
-            >
-              <h2 className="user-content__info-key">{element.title}</h2>
-              {elementRenderer(element)}
-            </div>
-          );
-        })}
-      </div>
+  if (user)
+    return (
+      <form className="user-content">
+        <button className="user-content__trash-btn" onClick={handleDelete} />
+        <img
+          src={img}
+          alt="Imagen de perfil"
+          className="user-content__profile-img"
+        />
+        <div className="user-content__info-container">
+          {elements.map((element) => {
+            return (
+              <div
+                className="user-content__info-element"
+                key={elements.indexOf(element)}
+              >
+                <h2 className="user-content__info-key">{element.title}</h2>
+                {elementRenderer(element)}
+              </div>
+            );
+          })}
+        </div>
 
-      <button className="user-content__submit-btn" onClick={handleSubmit}>
-        {submitText}
-      </button>
-    </form>
-  );
+        <button className="user-content__submit-btn" onClick={handleSubmit}>
+          {submitText}
+        </button>
+      </form>
+    );
 }
