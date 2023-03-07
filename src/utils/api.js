@@ -1,5 +1,5 @@
-export class Api {
-  constructor(jwt) {
+class Api {
+  constructor() {
     this._baseUrl = 'http://127.0.0.1:3001/';
     this._options = {
       headers: {
@@ -7,10 +7,10 @@ export class Api {
         Accept: 'application/json, text/plain, */*',
       },
     };
-    if (jwt) this._options.headers.authorization = `Bearer ${jwt}`;
   }
 
   _fetchData() {
+    if (this._jwt) this._options.headers.authorization = `Bearer ${this._jwt}`;
     return fetch(this._baseUrl + this._specificUrl, this._options)
       .then((res) => {
         if (res.ok) return res.json();
@@ -19,8 +19,8 @@ export class Api {
       .catch((err) => console.error(err));
   }
 
-  getUserInfo() {
-    // this._jwt = jwt;
+  getUserInfo(jwt) {
+    this._jwt = jwt;
     this._specificUrl = 'users/me';
     this._options.method = 'GET';
     delete this._options.body;
@@ -133,3 +133,5 @@ export class Api {
     return this._fetchData();
   }
 }
+
+export default new Api();

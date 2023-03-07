@@ -11,7 +11,7 @@ import BackgroundImg from '../BackgroundImg/BackgroundImg';
 import Preloader from '../Preloader/Preloader';
 import './app.css';
 import translationApi from '../../utils/translationApi';
-import { Api } from '../../utils/api';
+import api from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
@@ -56,7 +56,6 @@ function App() {
   const [proyects, setProyects] = useState('');
   const [selectedProyect, setSelectedProyect] = useState('');
 
-  const api = new Api(jwt);
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
 
@@ -401,6 +400,10 @@ function App() {
     setProyectPic(e.target.value);
   }
 
+  function handleProfilePicChange(e) {
+    setProfilePic(e.target.value);
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <TextContext.Provider value={text}>
@@ -511,7 +514,6 @@ function App() {
                     openPopupWithConfirmation={
                       handleOpenProyectPopupWithConfirmation
                     }
-                    getUser={() => api.getUser}
                     setSelectedProyect={setSelectedProyect}
                   />
                 </>
@@ -565,7 +567,6 @@ function App() {
                       handleOpenUserPopupWithConfirmation
                     }
                     disciplines={disciplines}
-                    getUser={() => api.getUser}
                   />
                   <BackgroundImg src={graffitiImg} />
                 </>
@@ -592,20 +593,20 @@ function App() {
                         onChange: handleProyectPicChange,
                       },
                       {
-                        name: 'proyectDescription',
+                        name: 'description',
                         type: 'text',
                         modifier: 'form__input_large',
                         title: text.description,
                         onChange: handleDescriptionChange,
                       },
                       {
-                        name: 'proyectCity',
+                        name: 'city',
                         type: 'text',
                         title: text.city,
                         onChange: handleCityChange,
                       },
                       {
-                        name: 'proyectDiscipline',
+                        name: 'discipline',
                         type: 'text',
                         title: text.discipline,
                         onChange: handleDisciplineChange,
@@ -633,6 +634,12 @@ function App() {
                         value: 'proyectName',
                         isInput: true,
                         onChange: handleProyectNameChange,
+                      },
+                      {
+                        value: 'proyectPic',
+                        isInput: true,
+                        title: text.proyectImage,
+                        onChange: handleProyectPicChange,
                       },
                       {
                         value: 'discipline',

@@ -18,7 +18,7 @@ export default function UserContent(props) {
   } = props;
   const { id } = useParams();
   const [isMine, setIsMine] = React.useState(false);
-  const [data, setData] = React.useState(false);
+  const [data, setData] = React.useState('');
 
   React.useEffect(() => {
     (async function () {
@@ -48,6 +48,16 @@ export default function UserContent(props) {
     e.preventDefault();
     openPopupWithConfirmation();
   };
+
+  function valuesRenderer(element) {
+    if (element.value === 'colaborators') {
+      return `${data[element.value].length} proyectos`;
+    }
+    if (data[element.value]) {
+      return data[element.value];
+    }
+    return '-';
+  }
 
   function btnRenderer() {
     if (isMine) {
@@ -114,7 +124,7 @@ export default function UserContent(props) {
   function paragraphRenderer(element) {
     return (
       <p className={`proyect-content__info-value ${element.modifier || ''}`}>
-        {data[element.value] || '-'}
+        {valuesRenderer(element)}
       </p>
     );
   }

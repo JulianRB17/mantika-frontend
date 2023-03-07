@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
+import api from '../../utils/api';
 
 export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -13,7 +14,6 @@ export default function UserContent(props) {
     onSubmit,
     disciplines,
     openPopupWithConfirmation,
-    getUser,
   } = props;
   const { id } = useParams();
 
@@ -25,7 +25,7 @@ export default function UserContent(props) {
         setUser(currentUser);
         setIsMe(true);
       } else {
-        const selectedUser = await getUser(id);
+        const selectedUser = await api.getUser(id);
         setUser(selectedUser);
         setIsMe(false);
       }
@@ -41,7 +41,7 @@ export default function UserContent(props) {
     openPopupWithConfirmation();
   };
 
-  function colaborationRenderer(element) {
+  function valuesRenderer(element) {
     if (
       element.value === 'createdProyects' ||
       element.value === 'colaboratingInProyects'
@@ -103,7 +103,7 @@ export default function UserContent(props) {
   function paragraphRenderer(element) {
     return (
       <p className={`user-content__info-value ${element.modifier || ''}`}>
-        {colaborationRenderer(element)}
+        {valuesRenderer(element)}
       </p>
     );
   }

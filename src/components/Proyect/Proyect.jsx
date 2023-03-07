@@ -10,13 +10,13 @@ export default function Proyect(props) {
   const text = React.useContext(TextContext);
   const [ownerObject, setOwnerObject] = React.useState('');
 
-  const { openPopupWithConfirmation, setSelectedProyect, getUser } = props;
+  const { openPopupWithConfirmation, setSelectedProyect } = props;
   const { proyectName, discipline, owner, proyectPic, colaborators, _id } =
     props.proyectData;
 
   React.useState(() => {
     (async () => {
-      const user = await getUser(owner);
+      const user = await api.getUser(owner);
       setOwnerObject(user);
     })();
   });
