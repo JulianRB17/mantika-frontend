@@ -15,16 +15,19 @@ import api from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import { TextContext } from '../../contexts/TextContext';
+import Sidebar from '../Sidebar/Sidebar';
+import PopupWithConfirmation from '../PopupWithConfirmation/PopupWithConfirmation';
+import UserContent from './../UserContent/UserContent';
+import ProyectContent from './../ProyectContent/ProyectContent';
+import ProtectedRoute from './../ProtectedRoute/ProtectedRoute';
 
 import hiphopImg from '../../images/hip-hop-dance.jpg';
 import graffitiImg from '../../images/graffiti.jpg';
 import balletImg from '../../images/ballet.jpg';
 import balletDancerImg from '../../images/ballet-woman.jpg';
 import brushImg from '../../images/brush.jpg';
-import Sidebar from '../Sidebar/Sidebar';
-import PopupWithConfirmation from '../PopupWithConfirmation/PopupWithConfirmation';
-import UserContent from './../UserContent/UserContent';
-import ProyectContent from './../ProyectContent/ProyectContent';
+import potteryImg from '../../images/pottery.jpg';
+import modelImg from '../../images/woman-model.jpg';
 
 function App() {
   const { useState } = React;
@@ -82,19 +85,19 @@ function App() {
           if (res.currentUser) {
             setJwt(token);
             setAuthorized(true);
-            navigation.current('/');
+            navigation.current('/landing');
             setLoading(false);
           } else {
             setAuthorized(false);
             setLoading(false);
-            navigate('/', { replace: true });
+            navigation('/landing', { replace: true });
           }
         }
       } catch (err) {
         handleError(err);
       }
     })();
-  }, []);
+  }, [navigation]);
 
   React.useEffect(() => {
     (async function () {
@@ -254,7 +257,14 @@ function App() {
   async function handleEditProyect(id) {
     try {
       setLoading(true);
-      const data = await api.updateProyectInfo(
+      const originalData = await api.getProyect(id);
+      if (!proyectName) setProyectName(originalData.proyectName);
+      if (!city) setCity(originalData.city);
+      if (!description) setDescription(originalData.description);
+      if (!discipline) setDiscipline(originalData.discipline);
+      if (!proyectPic) setProyectPic(originalData.proyectPic);
+
+      const newData = await api.updateProyectInfo(
         {
           proyectName,
           city,
@@ -264,7 +274,8 @@ function App() {
         },
         id
       );
-      if (data) {
+      if (newData) {
+        console.log(newData);
         await handleAllProyectsRenderer();
         navigate('/home', { replace: true });
         handleSuccess();
@@ -404,6 +415,191 @@ function App() {
     setProfilePic(e.target.value);
   }
 
+  function protectedRoutes() {
+    return (
+      <>
+        <Route
+          path="/home"
+          element={
+            <>
+              <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
+              <Main
+                proyects={proyects}
+                openPopupWithConfirmation={
+                  handleOpenProyectPopupWithConfirmation
+                }
+                setSelectedProyect={setSelectedProyect}
+              />
+            </>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <>
+              <UserContent
+                elements={[
+                  {
+                    title: text.username,
+                    value: 'username',
+                    isInput: true,
+                    onChange: handleUsernameChange,
+                  },
+                  {
+                    title: text.discipline,
+                    value: 'discipline',
+                    name: 'discipline',
+                    onChange: handleDisciplineChange,
+                  },
+                  {
+                    value: 'profilePic',
+                    isInput: true,
+                    title: text.proyectImage,
+                    onChange: handleProfilePicChange,
+                  },
+                  {
+                    title: text.description,
+                    value: 'description',
+                    modifier: 'user-content__input_large',
+                    isInput: true,
+                    isLarge: true,
+                    onChange: handleDescriptionChange,
+                  },
+                  {
+                    title: text.city,
+                    value: 'city',
+                    isInput: true,
+                    onChange: handleCityChange,
+                  },
+                  {
+                    title: text.createdProyects,
+                    value: 'createdProyects',
+                  },
+                  {
+                    title: text.colaboratingIn,
+                    value: 'colaboratingInProyects',
+                  },
+                ]}
+                img={profilePic ? profilePic : graffitiImg}
+                submitText="Edit"
+                onSubmit={handleEditUser}
+                openPopupWithConfirmation={handleOpenUserPopupWithConfirmation}
+                disciplines={disciplines}
+              />
+              <BackgroundImg src={modelImg} />
+            </>
+          }
+        />
+        <Route
+          path="/proyect/create"
+          element={
+            <>
+              <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
+              <Form
+                img={graffitiImg}
+                inputs={[
+                  {
+                    name: 'proyectName',
+                    type: 'text',
+                    title: text.proyect,
+                    onChange: handleProyectNameChange,
+                  },
+                  {
+                    name: 'proyectPic',
+                    type: text,
+                    title: text.proyectImage,
+                    onChange: handleProyectPicChange,
+                  },
+                  {
+                    name: 'description',
+                    type: 'text',
+                    modifier: 'form__input_large',
+                    title: text.description,
+                    onChange: handleDescriptionChange,
+                  },
+                  {
+                    name: 'city',
+                    type: 'text',
+                    title: text.city,
+                    onChange: handleCityChange,
+                  },
+                  {
+                    name: 'discipline',
+                    type: 'text',
+                    title: text.discipline,
+                    onChange: handleDisciplineChange,
+                  },
+                ]}
+                formName="Create a new proyect"
+                submitText={text.createBtn}
+                disciplines={disciplines}
+                onSubmit={handleCreateProyect}
+              />
+
+              <BackgroundImg src={brushImg} />
+            </>
+          }
+        />
+        <Route
+          path="/proyect/:id"
+          element={
+            <>
+              <ProyectContent
+                elements={[
+                  {
+                    title: text.proyect,
+                    value: 'proyectName',
+                    isInput: true,
+                    onChange: handleProyectNameChange,
+                  },
+                  {
+                    value: 'proyectPic',
+                    isInput: true,
+                    title: text.proyectImage,
+                    onChange: handleProyectPicChange,
+                  },
+                  {
+                    value: 'discipline',
+                    title: text.discipline,
+                    onChange: handleDisciplineChange,
+                  },
+                  {
+                    title: text.description,
+                    value: 'description',
+                    modifier: 'user-content__input_large',
+                    onChange: handleDescriptionChange,
+                    isLarge: true,
+                    isInput: true,
+                  },
+                  {
+                    title: text.city,
+                    value: 'city',
+                    onChange: handleCityChange,
+                    isInput: true,
+                  },
+                  {
+                    title: text.colaborators,
+                    value: 'colaborators',
+                  },
+                ]}
+                onEdit={handleEditProyect}
+                onGetProyect={handleGetProyect}
+                onColaborate={handleColaborate}
+                openPopupWithConfirmation={
+                  handleOpenProyectPopupWithConfirmation
+                }
+                disciplines={disciplines}
+                setSelectedProyect={setSelectedProyect}
+                submitText={text.colaborateBtn}
+              />
+              <BackgroundImg src={potteryImg} />
+            </>
+          }
+        />
+      </>
+    );
+  }
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <TextContext.Provider value={text}>
@@ -420,7 +616,7 @@ function App() {
           <Preloader isLoading={isLoading} />
           <Routes>
             <Route
-              path="/"
+              path="/landing"
               element={
                 <>
                   <Landing />
@@ -505,178 +701,11 @@ function App() {
               }
             />
             <Route
-              path="/home"
+              path="/*"
               element={
-                <>
-                  <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
-                  <Main
-                    proyects={proyects}
-                    openPopupWithConfirmation={
-                      handleOpenProyectPopupWithConfirmation
-                    }
-                    setSelectedProyect={setSelectedProyect}
-                  />
-                </>
-              }
-            />
-            <Route
-              path="/users/:id"
-              element={
-                <>
-                  <UserContent
-                    elements={[
-                      {
-                        title: text.username,
-                        value: 'username',
-                        isInput: true,
-                        onChange: handleUsernameChange,
-                      },
-                      {
-                        title: text.discipline,
-                        value: 'discipline',
-                        name: 'discipline',
-                        onChange: handleDisciplineChange,
-                      },
-                      {
-                        title: text.description,
-                        value: 'description',
-                        modifier: 'user-content__input_large',
-                        isInput: true,
-                        isLarge: true,
-                        onChange: handleDescriptionChange,
-                      },
-                      {
-                        title: text.city,
-                        value: 'city',
-                        isInput: true,
-                        onChange: handleCityChange,
-                      },
-                      {
-                        title: text.createdProyects,
-                        value: 'createdProyects',
-                      },
-                      {
-                        title: text.colaboratingIn,
-                        value: 'colaboratingInProyects',
-                      },
-                    ]}
-                    img={profilePic ? profilePic : graffitiImg}
-                    submitText="Edit"
-                    onSubmit={handleEditUser}
-                    openPopupWithConfirmation={
-                      handleOpenUserPopupWithConfirmation
-                    }
-                    disciplines={disciplines}
-                  />
-                  <BackgroundImg src={graffitiImg} />
-                </>
-              }
-            />
-            <Route
-              path="/proyect/create"
-              element={
-                <>
-                  <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
-                  <Form
-                    img={graffitiImg}
-                    inputs={[
-                      {
-                        name: 'proyectName',
-                        type: 'text',
-                        title: text.proyect,
-                        onChange: handleProyectNameChange,
-                      },
-                      {
-                        name: 'proyectPic',
-                        type: text,
-                        title: text.proyectImage,
-                        onChange: handleProyectPicChange,
-                      },
-                      {
-                        name: 'description',
-                        type: 'text',
-                        modifier: 'form__input_large',
-                        title: text.description,
-                        onChange: handleDescriptionChange,
-                      },
-                      {
-                        name: 'city',
-                        type: 'text',
-                        title: text.city,
-                        onChange: handleCityChange,
-                      },
-                      {
-                        name: 'discipline',
-                        type: 'text',
-                        title: text.discipline,
-                        onChange: handleDisciplineChange,
-                      },
-                    ]}
-                    formName="Create a new proyect"
-                    submitText={text.createBtn}
-                    disciplines={disciplines}
-                    onSubmit={handleCreateProyect}
-                  />
-
-                  <BackgroundImg src={brushImg} />
-                </>
-              }
-            />
-            <Route
-              path="/proyect/:id"
-              element={
-                <>
-                  <ProyectContent
-                    img={balletDancerImg}
-                    elements={[
-                      {
-                        title: text.proyect,
-                        value: 'proyectName',
-                        isInput: true,
-                        onChange: handleProyectNameChange,
-                      },
-                      {
-                        value: 'proyectPic',
-                        isInput: true,
-                        title: text.proyectImage,
-                        onChange: handleProyectPicChange,
-                      },
-                      {
-                        value: 'discipline',
-                        title: text.discipline,
-                        onChange: handleDisciplineChange,
-                      },
-                      {
-                        title: text.description,
-                        value: 'description',
-                        modifier: 'user-content__input_large',
-                        onChange: handleDescriptionChange,
-                        isLarge: true,
-                        isInput: true,
-                      },
-                      {
-                        title: text.city,
-                        value: 'city',
-                        onChange: handleCityChange,
-                        isInput: true,
-                      },
-                      {
-                        title: text.colaborators,
-                        value: 'colaborators',
-                      },
-                    ]}
-                    onEdit={handleEditProyect}
-                    onGetProyect={handleGetProyect}
-                    onColaborate={handleColaborate}
-                    openPopupWithConfirmation={
-                      handleOpenProyectPopupWithConfirmation
-                    }
-                    disciplines={disciplines}
-                    setSelectedProyect={setSelectedProyect}
-                    submitText={text.colaborateBtn}
-                  />
-                  <BackgroundImg src={balletDancerImg} />
-                </>
+                <ProtectedRoute isAuthorized={isAuthorized}>
+                  <Routes>{protectedRoutes()}</Routes>
+                </ProtectedRoute>
               }
             />
           </Routes>

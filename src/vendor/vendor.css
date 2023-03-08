@@ -17,6 +17,7 @@ button {
   box-shadow: 0 0 10px 1px rgba(26, 27, 34, 1);
   margin: 0;
   border: 0;
+  cursor: pointer;
 }
 
 .hidden {

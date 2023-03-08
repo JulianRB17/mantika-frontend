@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import defaultImg from '../../images/default.jpg';
 import { TextContext } from './../../contexts/TextContext';
+import api from '../../utils/api';
 
 export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -13,7 +14,6 @@ export default function UserContent(props) {
     onColaborate,
     disciplines,
     openPopupWithConfirmation,
-    onGetProyect,
     setSelectedProyect,
   } = props;
   const { id } = useParams();
@@ -22,8 +22,7 @@ export default function UserContent(props) {
 
   React.useEffect(() => {
     (async function () {
-      const proyectData = await onGetProyect(id);
-      console.log(proyectData);
+      const proyectData = await api.getProyect(id);
       setData(proyectData);
       if (proyectData.owner === currentUser._id) {
         setIsMine(true);
@@ -32,7 +31,7 @@ export default function UserContent(props) {
         setIsMine(false);
       }
     })();
-  }, [id]);
+  }, [id, currentUser._id, setSelectedProyect]);
 
   function handleEdit(e) {
     e.preventDefault();
@@ -50,7 +49,7 @@ export default function UserContent(props) {
   };
 
   function valuesRenderer(element) {
-    if (element.value === 'colaborators') {
+    if (element.value === 'colaborators' && data[element.value]) {
       return `${data[element.value].length} proyectos`;
     }
     if (data[element.value]) {

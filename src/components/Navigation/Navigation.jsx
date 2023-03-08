@@ -51,7 +51,11 @@ export default function Navigation(props) {
           >
             {currentUser.username}
           </NavLink>
-          <NavLink className="navigation__link" to="/" onClick={handleLogout}>
+          <NavLink
+            className="navigation__link"
+            to="/landing"
+            onClick={handleLogout}
+          >
             Logout
           </NavLink>
         </div>
@@ -80,8 +84,8 @@ export default function Navigation(props) {
     return (
       <section className="navigation">
         <div className="navigation__links-container">
-          <NavLink className="navigation__link" to="/">
-            Home
+          <NavLink className="navigation__link" to="/landing">
+            Landing
           </NavLink>
           <NavLink className="navigation__link" to="/about">
             About us

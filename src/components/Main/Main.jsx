@@ -12,7 +12,7 @@ export default function Main(props) {
     props;
   const text = React.useContext(TextContext);
   const [currentPage, setCurrentPage] = React.useState(1);
-  const pageSize = 3;
+  const pageSize = 8;
 
   const paginatedProyects = paginate(proyects, currentPage, pageSize);
   const totalCount = proyects.length;

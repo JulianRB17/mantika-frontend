@@ -2,22 +2,21 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import api from '../../utils/api';
+import defaultImg from '../../images/default.jpg';
 
 export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
   const [user, setUser] = React.useState('');
+  const [isMe, setIsMe] = React.useState(false);
 
   const {
     elements,
     submitText,
-    img,
     onSubmit,
     disciplines,
     openPopupWithConfirmation,
   } = props;
   const { id } = useParams();
-
-  const [isMe, setIsMe] = React.useState(false);
 
   React.useEffect(() => {
     (async () => {
@@ -30,7 +29,8 @@ export default function UserContent(props) {
         setIsMe(false);
       }
     })();
-  }, []);
+  }, [currentUser, id]);
+
   function handleSubmit(e) {
     e.preventDefault();
     onSubmit();
@@ -127,7 +127,7 @@ export default function UserContent(props) {
       <form className="user-content">
         <button className="user-content__trash-btn" onClick={handleDelete} />
         <img
-          src={img}
+          src={user.profilePic || defaultImg}
           alt="Imagen de perfil"
           className="user-content__profile-img"
         />
