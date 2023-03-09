@@ -496,18 +496,19 @@ function App() {
             <>
               <Sidebar onMyProyectsRenderer={handleMyProyectsRenderer} />
               <Form
-                img={graffitiImg}
                 inputs={[
                   {
                     name: 'proyectName',
                     type: 'text',
                     title: text.proyect,
+                    errorMessage: text.proyectNameErrorMessage,
                     onChange: handleProyectNameChange,
                   },
                   {
                     name: 'proyectPic',
                     type: text,
                     title: text.proyectImage,
+                    errorMessage: text.proyectPicErrorMessage,
                     onChange: handleProyectPicChange,
                   },
                   {
@@ -515,22 +516,24 @@ function App() {
                     type: 'text',
                     modifier: 'form__input_large',
                     title: text.description,
+                    errorMessage: text.descriptionErrorMessage,
                     onChange: handleDescriptionChange,
                   },
                   {
                     name: 'city',
                     type: 'text',
                     title: text.city,
+                    errorMessage: text.cityErrorMessage,
                     onChange: handleCityChange,
                   },
                   {
                     name: 'discipline',
-                    type: 'text',
                     title: text.discipline,
+                    errorMessage: text.disciplineErrorMessage,
                     onChange: handleDisciplineChange,
                   },
                 ]}
-                formName="Create a new proyect"
+                formName={text.newProyectTitle}
                 submitText={text.createBtn}
                 disciplines={disciplines}
                 onSubmit={handleCreateProyect}
@@ -634,24 +637,28 @@ function App() {
                         name: 'username',
                         type: 'text',
                         title: text.username,
+                        errorMessage: text.usernameErrorMessage,
                         onChange: handleUsernameChange,
                       },
                       {
                         name: 'email',
                         type: 'email',
                         title: 'Email',
+                        errorMessage: text.emailErrorMessage,
                         onChange: handleEmailChange,
                       },
                       {
                         name: 'password',
                         type: 'password',
                         title: text.password,
+                        errorMessage: text.passwordErrorMessage,
                         onChange: handlePasswordChange,
                       },
                       {
                         name: 'discipline',
                         type: 'discipline',
                         title: text.discipline,
+                        errorMessage: text.disciplineErrorMessage,
                         onChange: handleDisciplineChange,
                       },
                     ]}

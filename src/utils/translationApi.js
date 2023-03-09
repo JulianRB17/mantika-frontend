@@ -54,9 +54,23 @@ class TanslationApi {
       proyect: 'Proyecto: ',
       editBtn: 'Editar',
       deleteBtn: 'Borrar',
+      newProyectTitle: 'Crear un nuevo proyecto',
       myProyectsBtn: 'Mis proyectos',
       proyectsNotFound: 'No se encontraron proyectos',
       proyectImage: 'Imagen',
+      proyectNameErrorMessage:
+        'Nombre de proyecto incorrecto, verifica que tenga entre 3 y 20 caracteres.',
+      proyectPicErrorMessage: 'Ingresa la URL válida de una imagen, por favor.',
+      descriptionErrorMessage:
+        'Ingresa una descripción de entre 15 y 200 caracteres',
+      cityErrorMessage:
+        'Ingresa el nombre de la localidad donde el proyecto se realizará, debe tener entre 3 y 20 caracteres.',
+      usernameErrorMessage:
+        'Nombre de usuario incorrecto, verifica que tenga entre 3 y 20 caracteres y que no use caracteres especiales.',
+      emailErrorMessage: 'Por favor ingresa un email válido.',
+      passwordErrorMessage:
+        'Ingresa una contraseña entre 6 y 20 caracteres con al menos una letra, un número y un caracter especial.',
+      disciplineErrorMessage: 'Selecciona una disciplina',
     };
 
     this.disciplines = [

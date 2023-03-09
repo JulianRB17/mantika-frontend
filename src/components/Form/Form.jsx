@@ -2,16 +2,21 @@ import React from 'react';
 
 export default function Form(props) {
   const { formName, inputs, submitText, onSubmit, disciplines } = props;
+  const [isValidForm, setValidInput] = React.useState(false);
 
   function handleSubmit(e) {
     e.preventDefault();
     onSubmit();
   }
 
+  function errorMessageRenderer(input) {
+    return <span className="form__error-msg">{input.errorMessage}</span>;
+  }
+
   function disciplineRenderer(input) {
     return (
       <div className="form__input-container" key={inputs.indexOf(input)}>
-        <p className="form__input-descrption">{input.title}</p>
+        <label className="form__input-descrption">{input.title}</label>
         <select
           required
           className="form__input"
@@ -32,6 +37,7 @@ export default function Form(props) {
             );
           })}
         </select>
+        {errorMessageRenderer(input)}
       </div>
     );
   }
@@ -39,7 +45,7 @@ export default function Form(props) {
   function inputLargeRenderer(input) {
     return (
       <div className="form__input-container" key={inputs.indexOf(input)}>
-        <p className="form__input-descrption">{input.title}</p>
+        <label className="form__input-descrption">{input.title}</label>
         <textarea
           required
           className={
@@ -50,6 +56,7 @@ export default function Form(props) {
           type={input.type}
           onChange={input.onChange}
         ></textarea>
+        {errorMessageRenderer(input)}
       </div>
     );
   }
@@ -57,7 +64,7 @@ export default function Form(props) {
   function inputRenderer(input) {
     return (
       <div className="form__input-container" key={inputs.indexOf(input)}>
-        <p className="form__input-descrption">{input.title}</p>
+        <label className="form__input-descrption">{input.title}</label>
         <input
           required
           className={
@@ -68,6 +75,7 @@ export default function Form(props) {
           type={input.type}
           onChange={input.onChange}
         ></input>
+        {errorMessageRenderer(input)}
       </div>
     );
   }
@@ -90,7 +98,13 @@ export default function Form(props) {
       <div className="form__overlay" />
       <h1 className="form__title">{formName}</h1>
       {inputsRenderer()}
-      <button className="form__submit-btn" onClick={handleSubmit}>
+      <button
+        className={`form__submit-btn ${
+          isValidForm || 'form__submit-btn_inactive'
+        }`}
+        disabled={!isValidForm}
+        onClick={handleSubmit}
+      >
         {submitText}
       </button>
     </form>
