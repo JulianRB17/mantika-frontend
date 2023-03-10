@@ -29,46 +29,6 @@
   padding-left: 10px;
 }
 
-.form__input-container {
-  display: flex;
-  flex-direction: column;
-}
-
-.form__input {
-  background-color: aliceblue;
-  border-radius: 5px;
-  width: 75%;
-  margin: 0 auto 10px;
-  height: 25px;
-  position: relative;
-}
-
-.form__input::placeholder {
-  padding-left: 10px;
-  font-size: 15px;
-}
-
-.form__input:focus {
-  outline: 2px double #32a1ce;
-}
-
-.form__input_large {
-  height: 100px;
-}
-
-.form__input-descrption {
-  margin: 10px auto 0 10%;
-  font-size: 20px;
-  padding-left: 10px;
-}
-
-.form__error-msg {
-  color: rgb(236, 139, 139);
-  text-shadow: 0 0 1px white;
-  width: 75%;
-  margin: 0 auto;
-}
-
 .form__submit-btn {
   position: relative;
   z-index: 2;

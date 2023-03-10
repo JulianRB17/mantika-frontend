@@ -502,11 +502,12 @@ function App() {
                     type: 'text',
                     title: text.proyect,
                     errorMessage: text.proyectNameErrorMessage,
+                    pattern: '[^<>]{3,20}',
                     onChange: handleProyectNameChange,
                   },
                   {
                     name: 'proyectPic',
-                    type: text,
+                    type: 'url',
                     title: text.proyectImage,
                     errorMessage: text.proyectPicErrorMessage,
                     onChange: handleProyectPicChange,
@@ -516,6 +517,7 @@ function App() {
                     type: 'text',
                     modifier: 'form__input_large',
                     title: text.description,
+                    pattern: '[^<>]{9,200}',
                     errorMessage: text.descriptionErrorMessage,
                     onChange: handleDescriptionChange,
                   },
@@ -524,12 +526,14 @@ function App() {
                     type: 'text',
                     title: text.city,
                     errorMessage: text.cityErrorMessage,
+                    pattern: '[^<>]{3,20}',
                     onChange: handleCityChange,
                   },
                   {
                     name: 'discipline',
                     title: text.discipline,
                     errorMessage: text.disciplineErrorMessage,
+                    pattern: '[^-]',
                     onChange: handleDisciplineChange,
                   },
                 ]}
@@ -638,6 +642,7 @@ function App() {
                         type: 'text',
                         title: text.username,
                         errorMessage: text.usernameErrorMessage,
+                        pattern: '[^<>]{3,20}',
                         onChange: handleUsernameChange,
                       },
                       {
@@ -652,6 +657,8 @@ function App() {
                         type: 'password',
                         title: text.password,
                         errorMessage: text.passwordErrorMessage,
+                        pattern:
+                          '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
                         onChange: handlePasswordChange,
                       },
                       {
@@ -659,6 +666,7 @@ function App() {
                         type: 'discipline',
                         title: text.discipline,
                         errorMessage: text.disciplineErrorMessage,
+                        pattern: '[^-]',
                         onChange: handleDisciplineChange,
                       },
                     ]}

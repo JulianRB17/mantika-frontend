@@ -69,7 +69,7 @@ class TanslationApi {
         'Nombre de usuario incorrecto, verifica que tenga entre 3 y 20 caracteres y que no use caracteres especiales.',
       emailErrorMessage: 'Por favor ingresa un email válido.',
       passwordErrorMessage:
-        'Ingresa una contraseña entre 6 y 20 caracteres con al menos una letra, un número y un caracter especial.',
+        'Ingresa una contraseña entre 6 y 20 caracteres con al menos una letra minúscula, una mayúscula y un número.',
       disciplineErrorMessage: 'Selecciona una disciplina',
     };
 
