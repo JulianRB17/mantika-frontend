@@ -657,12 +657,16 @@ function App() {
                         name: 'email',
                         type: 'email',
                         title: 'Email',
+                        errorMessage: text.emailErrorMessage,
                         onChange: handleLoginChange,
                       },
                       {
                         name: 'password',
                         type: 'password',
                         title: text.password,
+                        pattern:
+                          '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
+                        errorMessage: text.passwordErrorMessage,
                         onChange: handleLoginChange,
                       },
                     ]}

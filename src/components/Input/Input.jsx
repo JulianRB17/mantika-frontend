@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default function Input(props) {
-  const { inputData, disciplines, onValidatedInputs, validatedInputs } = props;
+  const { inputData, disciplines } = props;
   const [blur, setBlur] = React.useState(false);
   React.useEffect(() => {});
 
