@@ -42,26 +42,25 @@ export default function UserContent(props) {
   };
 
   function valuesRenderer(element) {
-    if (
-      element.value === 'createdProyects' ||
-      element.value === 'colaboratingInProyects'
-    ) {
-      return `${user[element.value].length} proyectos`;
+    const { name } = element;
+    if (name === 'createdProyects' || name === 'colaboratingInProyects') {
+      return `${user[name].length} proyectos`;
     }
-    if (user[element.value]) {
-      return user[element.value];
+    if (user[name]) {
+      return user[name];
     }
     return '-';
   }
 
   function disciplineRenderer(element) {
+    const { onChange } = element;
     return (
       <select
         required
         className="user-content__input user-content__info-value"
         name="discipline"
         key={elements.indexOf(element)}
-        onChange={element.onChange}
+        onChange={onChange}
         defaultValue={user.discipline}
         placeholder={user.discipline}
       >
@@ -77,45 +76,51 @@ export default function UserContent(props) {
   }
 
   function largeInputRenderer(element) {
+    const { name, modifier, onChange } = element;
     return (
       <textarea
         className={`user-content__info-value user-content__input ${
-          element.modifier || ''
+          modifier || ''
         }`}
-        placeholder={user[element.value]}
-        onChange={element.onChange}
+        placeholder={user[name]}
+        onChange={onChange}
+        name={name}
       />
     );
   }
 
   const inputRenderer = function (element) {
+    const { name, modifier, onChange } = element;
     return (
       <input
         className={`user-content__info-value user-content__input ${
-          element.modifier || ''
+          modifier || ''
         }`}
-        placeholder={user[element.value]}
-        onChange={element.onChange}
+        placeholder={user[name]}
+        onChange={onChange}
+        name={name}
       />
     );
   };
 
   function paragraphRenderer(element) {
+    const { modifier } = element;
     return (
-      <p className={`user-content__info-value ${element.modifier || ''}`}>
+      <p className={`user-content__info-value ${modifier || ''}`}>
         {valuesRenderer(element)}
       </p>
     );
   }
 
   function elementRenderer(element) {
-    if (isMe && element.isInput && element.isLarge) {
+    const { isInput, isLarge, name } = element;
+    if (isMe && isInput && isLarge) {
       return largeInputRenderer(element);
     }
-    if (isMe && element.isInput) {
+    if (isMe && isInput) {
       return inputRenderer(element);
     }
-    if (element.name === 'discipline' && isMe) {
+    if (name === 'discipline' && isMe) {
       return disciplineRenderer(element);
     } else {
       return paragraphRenderer(element);
@@ -133,12 +138,13 @@ export default function UserContent(props) {
         />
         <div className="user-content__info-container">
           {elements.map((element) => {
+            const { title } = element;
             return (
               <div
                 className="user-content__info-element"
                 key={elements.indexOf(element)}
               >
-                <h2 className="user-content__info-key">{element.title}</h2>
+                <h2 className="user-content__info-key">{title}</h2>
                 {elementRenderer(element)}
               </div>
             );

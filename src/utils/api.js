@@ -49,10 +49,11 @@ class Api {
   }
 
   createProyect(data) {
-    const { proyectName, description, discipline, city } = data;
+    const { proyectName, description, discipline, city, proyectPic } = data;
     this._specificUrl = 'proyects';
     this._options.method = 'POST';
     this._options.body = JSON.stringify({
+      proyectPic,
       proyectName,
       description,
       city,

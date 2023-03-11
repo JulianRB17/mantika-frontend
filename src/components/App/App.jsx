@@ -35,16 +35,7 @@ function App() {
   const [jwt, setJwt] = useState('');
   const [isAuthorized, setAuthorized] = useState(false);
   const [searchInput, setSearchInput] = useState('');
-  const [proyectPic, setProyectPic] = useState('');
-  const [profilePic, setProfilePic] = useState('');
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [discipline, setDiscipline] = useState('');
-  const [description, setDescription] = useState('');
-  const [city, setCity] = useState('');
   const [currentUser, setCurrentUser] = useState('');
-  const [proyectName, setProyectName] = useState('');
   const [isLoading, setLoading] = useState(false);
   const [text, setText] = useState(translationApi.spanishObject);
   const [disciplines, setDisciplines] = useState(translationApi.disciplines);
@@ -58,6 +49,11 @@ function App() {
   ] = useState(false);
   const [proyects, setProyects] = useState('');
   const [selectedProyect, setSelectedProyect] = useState('');
+  const [registerInputData, setRegisterInputData] = useState({});
+  const [loginInputData, setLoginInputData] = useState({});
+  const [createProyectInputData, setCreateProyectInputData] = useState({});
+  const [updateProyectInputData, setUpdateProyectInputData] = useState({});
+  const [updateUserInputData, setUpdateUserInputData] = useState({});
 
   const navigate = useNavigate();
   const navigation = React.useRef(useNavigate());
@@ -140,11 +136,10 @@ function App() {
   async function handleUserRegistration() {
     try {
       setLoading(true);
-      const data = await register(username, email, password, discipline);
+      const data = await register(registerInputData);
       if (data.token) {
         localStorage.setItem('jwt', data.token);
         setJwt(data.token);
-        setPassword('');
         navigate('/home', { replace: true });
         setAuthorized(true);
         handleSuccess();
@@ -158,11 +153,10 @@ function App() {
   async function handleLogin() {
     try {
       setLoading(true);
-      const data = await authorize(email, password);
+      const data = await authorize(loginInputData);
       if (data.token) {
         setJwt(data.token);
         localStorage.setItem('jwt', data.token);
-        setPassword('');
         navigate('/home', { replace: true });
         setAuthorized(true);
         handleSuccess();
@@ -177,14 +171,7 @@ function App() {
   async function handleEditUser() {
     try {
       setLoading(true);
-      const data = await api.updateUserInfo({
-        username,
-        city,
-        description,
-        discipline,
-        password,
-        profilePic,
-      });
+      const data = await api.updateUserInfo(updateUserInputData);
 
       if (data) {
         setCurrentUser(data.user);
@@ -239,12 +226,7 @@ function App() {
   async function handleCreateProyect() {
     try {
       setLoading(true);
-      const proyectData = await api.createProyect({
-        city,
-        proyectName,
-        description,
-        discipline,
-      });
+      const proyectData = await api.createProyect(createProyectInputData);
       await api.updateUserCreatedInfo(proyectData.proyect._id);
       await handleAllProyectsRenderer();
       navigate('/home', { replace: true });
@@ -257,25 +239,8 @@ function App() {
   async function handleEditProyect(id) {
     try {
       setLoading(true);
-      const originalData = await api.getProyect(id);
-      if (!proyectName) setProyectName(originalData.proyectName);
-      if (!city) setCity(originalData.city);
-      if (!description) setDescription(originalData.description);
-      if (!discipline) setDiscipline(originalData.discipline);
-      if (!proyectPic) setProyectPic(originalData.proyectPic);
-
-      const newData = await api.updateProyectInfo(
-        {
-          proyectName,
-          city,
-          description,
-          discipline,
-          proyectPic,
-        },
-        id
-      );
+      const newData = await api.updateProyectInfo(updateProyectInputData, id);
       if (newData) {
-        console.log(newData);
         await handleAllProyectsRenderer();
         navigate('/home', { replace: true });
         handleSuccess();
@@ -375,44 +340,48 @@ function App() {
     setText(translationApi.spanishObject);
   }
 
-  function handleUsernameChange(e) {
-    setUsername(e.target.value);
+  function handleRegistrationChange(e) {
+    const target = e.target;
+    setRegisterInputData({
+      ...registerInputData,
+      [target.name]: target.value,
+    });
   }
 
-  function handlePasswordChange(e) {
-    setPassword(e.target.value);
+  function handleLoginChange(e) {
+    const target = e.target;
+    setLoginInputData({
+      ...loginInputData,
+      [target.name]: target.value,
+    });
   }
 
-  function handleEmailChange(e) {
-    setEmail(e.target.value);
+  function handleCreateProyectChange(e) {
+    const target = e.target;
+    setCreateProyectInputData({
+      ...createProyectInputData,
+      [target.name]: target.value,
+    });
   }
 
-  function handleDescriptionChange(e) {
-    setDescription(e.target.value);
+  function handleUpdateProyectChange(e) {
+    const target = e.target;
+    setUpdateProyectInputData({
+      ...updateProyectInputData,
+      [target.name]: target.value,
+    });
   }
 
-  function handleCityChange(e) {
-    setCity(e.target.value);
-  }
-
-  function handleDisciplineChange(e) {
-    setDiscipline(e.target.value);
-  }
-
-  function handleProyectNameChange(e) {
-    setProyectName(e.target.value);
+  function handleUpdateUserChange(e) {
+    const target = e.target;
+    setUpdateUserInputData({
+      ...updateUserInputData,
+      [target.name]: target.value,
+    });
   }
 
   function handleSearchInputChange(e) {
     setSearchInput(e.target.value);
-  }
-
-  function handleProyectPicChange(e) {
-    setProyectPic(e.target.value);
-  }
-
-  function handleProfilePicChange(e) {
-    setProfilePic(e.target.value);
   }
 
   function protectedRoutes() {
@@ -441,46 +410,45 @@ function App() {
                 elements={[
                   {
                     title: text.username,
-                    value: 'username',
+                    name: 'username',
                     isInput: true,
-                    onChange: handleUsernameChange,
+                    onChange: handleUpdateUserChange,
                   },
                   {
                     title: text.discipline,
-                    value: 'discipline',
                     name: 'discipline',
-                    onChange: handleDisciplineChange,
+                    name: 'discipline',
+                    onChange: handleUpdateUserChange,
                   },
                   {
-                    value: 'profilePic',
+                    name: 'profilePic',
                     isInput: true,
                     title: text.proyectImage,
-                    onChange: handleProfilePicChange,
+                    onChange: handleUpdateUserChange,
                   },
                   {
                     title: text.description,
-                    value: 'description',
+                    name: 'description',
                     modifier: 'user-content__input_large',
                     isInput: true,
                     isLarge: true,
-                    onChange: handleDescriptionChange,
+                    onChange: handleUpdateUserChange,
                   },
                   {
                     title: text.city,
-                    value: 'city',
+                    name: 'city',
                     isInput: true,
-                    onChange: handleCityChange,
+                    onChange: handleUpdateUserChange,
                   },
                   {
                     title: text.createdProyects,
-                    value: 'createdProyects',
+                    name: 'createdProyects',
                   },
                   {
                     title: text.colaboratingIn,
-                    value: 'colaboratingInProyects',
+                    name: 'colaboratingInProyects',
                   },
                 ]}
-                img={profilePic ? profilePic : graffitiImg}
                 submitText="Edit"
                 onSubmit={handleEditUser}
                 openPopupWithConfirmation={handleOpenUserPopupWithConfirmation}
@@ -503,14 +471,14 @@ function App() {
                     title: text.proyect,
                     errorMessage: text.proyectNameErrorMessage,
                     pattern: '[^<>]{3,20}',
-                    onChange: handleProyectNameChange,
+                    onChange: handleCreateProyectChange,
                   },
                   {
                     name: 'proyectPic',
                     type: 'url',
                     title: text.proyectImage,
                     errorMessage: text.proyectPicErrorMessage,
-                    onChange: handleProyectPicChange,
+                    onChange: handleCreateProyectChange,
                   },
                   {
                     name: 'description',
@@ -519,7 +487,7 @@ function App() {
                     title: text.description,
                     pattern: '[^<>]{9,200}',
                     errorMessage: text.descriptionErrorMessage,
-                    onChange: handleDescriptionChange,
+                    onChange: handleCreateProyectChange,
                   },
                   {
                     name: 'city',
@@ -527,14 +495,14 @@ function App() {
                     title: text.city,
                     errorMessage: text.cityErrorMessage,
                     pattern: '[^<>]{3,20}',
-                    onChange: handleCityChange,
+                    onChange: handleCreateProyectChange,
                   },
                   {
                     name: 'discipline',
                     title: text.discipline,
                     errorMessage: text.disciplineErrorMessage,
                     pattern: '[^-]',
-                    onChange: handleDisciplineChange,
+                    onChange: handleCreateProyectChange,
                   },
                 ]}
                 formName={text.newProyectTitle}
@@ -555,38 +523,38 @@ function App() {
                 elements={[
                   {
                     title: text.proyect,
-                    value: 'proyectName',
+                    name: 'proyectName',
                     isInput: true,
-                    onChange: handleProyectNameChange,
+                    onChange: handleUpdateProyectChange,
                   },
                   {
-                    value: 'proyectPic',
+                    name: 'proyectPic',
                     isInput: true,
                     title: text.proyectImage,
-                    onChange: handleProyectPicChange,
+                    onChange: handleUpdateProyectChange,
                   },
                   {
-                    value: 'discipline',
+                    name: 'discipline',
                     title: text.discipline,
-                    onChange: handleDisciplineChange,
+                    onChange: handleUpdateProyectChange,
                   },
                   {
                     title: text.description,
-                    value: 'description',
+                    name: 'description',
                     modifier: 'user-content__input_large',
-                    onChange: handleDescriptionChange,
+                    onChange: handleUpdateProyectChange,
                     isLarge: true,
                     isInput: true,
                   },
                   {
                     title: text.city,
-                    value: 'city',
-                    onChange: handleCityChange,
+                    name: 'city',
+                    onChange: handleUpdateProyectChange,
                     isInput: true,
                   },
                   {
                     title: text.colaborators,
-                    value: 'colaborators',
+                    name: 'colaborators',
                   },
                 ]}
                 onEdit={handleEditProyect}
@@ -643,14 +611,14 @@ function App() {
                         title: text.username,
                         errorMessage: text.usernameErrorMessage,
                         pattern: '[^<>]{3,20}',
-                        onChange: handleUsernameChange,
+                        onChange: handleRegistrationChange,
                       },
                       {
                         name: 'email',
                         type: 'email',
                         title: 'Email',
                         errorMessage: text.emailErrorMessage,
-                        onChange: handleEmailChange,
+                        onChange: handleRegistrationChange,
                       },
                       {
                         name: 'password',
@@ -659,7 +627,7 @@ function App() {
                         errorMessage: text.passwordErrorMessage,
                         pattern:
                           '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
-                        onChange: handlePasswordChange,
+                        onChange: handleRegistrationChange,
                       },
                       {
                         name: 'discipline',
@@ -667,7 +635,7 @@ function App() {
                         title: text.discipline,
                         errorMessage: text.disciplineErrorMessage,
                         pattern: '[^-]',
-                        onChange: handleDisciplineChange,
+                        onChange: handleRegistrationChange,
                       },
                     ]}
                     formName="Register"
@@ -689,13 +657,13 @@ function App() {
                         name: 'email',
                         type: 'email',
                         title: 'Email',
-                        onChange: handleEmailChange,
+                        onChange: handleLoginChange,
                       },
                       {
                         name: 'password',
                         type: 'password',
                         title: text.password,
-                        onChange: handlePasswordChange,
+                        onChange: handleLoginChange,
                       },
                     ]}
                     formName="Login"

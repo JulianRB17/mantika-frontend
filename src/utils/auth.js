@@ -1,9 +1,8 @@
 // const baseUrl = 'https://api.julianrb-around.students.nomoredomainssbs.ru/';
 const baseUrl = 'http://127.0.0.1:3001/';
 
-const register = async function (username, email, password, discipline) {
+const register = async function ({ username, email, password, discipline }) {
   try {
-    console.log(JSON.stringify({ username, email, password, discipline }));
     const res = await fetch(`${baseUrl}signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -17,7 +16,7 @@ const register = async function (username, email, password, discipline) {
   }
 };
 
-const authorize = async function (email, password) {
+const authorize = async function ({ email, password }) {
   try {
     const res = await fetch(`${baseUrl}login`, {
       method: 'POST',
