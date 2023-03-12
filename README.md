@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+# Mantika full api
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## API creada para el proyecto final del bootcamp en web development Practicum de Yandex.
 
-## Available Scripts
+Se puede revisar la página en el siguiente [dominio](https://www.julianrb-around.students.nomoredomainssbs.ru/).
 
-In the project directory, you can run:
+El frontend de esta API fue desarrollado usando la biblioteca de JavaScript: React, el backend usa Node.js con el framework Express además de MongoDB como base de datos no relacional.
 
-### `npm start`
+El servidor se encuentra alojado en Google Cloud, éste ocupa NGINX para vincular los puertos y pm2 para mantenerse operando.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Cómo usar
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Para usar la web app se requiere una autorización.
 
-### `npm test`
+- Sin autorización cualquier endpoint será redirigido a '/landing'. También en el header, en la barra de navegación se encontrarán links a los endpoints '/around-us', '/login' y '/register'.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- En '/register' hay un formulario con autorización para poder generar un nuevo usuario, al meter los datos con características correctas apuntadas por los mensajes de error, será autorizado. Todos los campos son requeridos.
 
-### `npm run build`
+- En '/login' habrá otro formulario, que con un email y contraseña autorizará el acceso.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Tanto en '/login' como en '/register' el ingreso correcto almacenará un token en el local storage del navegador, éste tendrá una validez de 7 días.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Junto al logotipo de Mantika, del lado izquierdo de la barra de navegación, habrá dos botones: EN y ES, el botón EN conectará a una API con una inteligencia artificial que permitirá traducir los elementos de texto escritos en la página al idioma inglés. Esta información se almacenará por lo que la llamada a la API sólo se realizará una vez cada que la página se recarga, por esto las siguientes veces que el botón se toque se cargará rapidamente el nuevo lenguaje. El botón ES regresará al español.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Después de ser autorizado, el usuario podrá acceder al endpoint '/home', página principal donde del lado izquierdo podemos ver una sidebar con nuestros datos, debajo se encontrará un botón para editar el usuario que nos lleva al endpoint '/users/:id', también habrá otro botón que permitirá ver en la zona central los proyectos creados específicamente por el usuario.
 
-### `npm run eject`
+- En el endpoint '/users/:id' si el usuario que se está revisando es el mismo que está navegando se pueden editar los datos y eliminar al usuario con el botón del bote de basura en la esquina superior izquierda. Los únicos datos que no se pueden modificar son los números de proyectos creados y proyectos en los que el usuario colabora. Si el usuario es otro, únicamente se podrán revisar los datos sin la posibilidad de editar ninguno.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+- Al ser autorizado, el header cambiará: se abrirá la posibilidad de cerrar sesión en el botón logout, por otro lado el botón home reseteará la zona central del home y, si el usuario se encuentra en algún otro endpoint, será redirigido a '/home'. El botón About us redirigirá al mismo enpoint. También aparecerá una barra de búsqueda, al colocar algún texto en ésta y mandarla se renderizarán en la zona central proyectos que incluyan esta palabra en el nombre, la descripción, la disciplina o la ciudad.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- En la zona central se renderizarán, de manera predeterminada los diferentes proyectos almacenados en la base de datos, estos están paginados, hasta 8 proyectos por página. Si sólo hay una página, no habrán números renderizados.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+-Al final de cada página habrá un botón de + que dirigirá al endpoint '/proyect/create' donde habrá un formilario con validación que permitirá crear un nuevo proyecto. Todos los campos son requeridos.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- En cada uno de los proyectos se puede dar click en la imagen central para ir al endpoint '/proyect/:id', en éste se podrá revisar la información de cada proyecto, si el proyecto fue creado por el usuario éste podrá editarlo, la edición también tiene validación. Si el proyecto es propio, desde '/home' también habrá un botón para eliminar al proyecto y otro para editarlo. También se le puede dar click al nombre del usuario creador, para ir al endpoint '/users/:id'.
 
-## Learn More
+- En el endpoint '/proyect/:id' si el usuario no es dueño del proyecto, en lugar de editar, el botón dirá colaborar lo que permitirá sumar ese proyecto a la lista de proyectos en los que se está colaborando (aún no es visible) y se sumará el usuario a la lista de usuarios en que están colaborando en éste (tampoco es visible por el momento).
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Frontend endpoints
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Se puede acceder a través de https://www.julianrb-around.students.nomoredomainssbs.ru/ o https://julianrb-around.students.nomoredomainssbs.ru/
 
-### Code Splitting
+- `/landing` - Página inicial si el usuario no ha sido loggeado. Contiene botones a '/register' y a '/login'.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- `/about` - Página que tiene un texto acerca del proyecto de la app.
 
-### Analyzing the Bundle Size
+- `/register` - Registro de usuarios a través de un formulario.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- `/login` - Aquí se podrá autorizar un usuario a través de un email y contraseña válidos.
 
-### Making a Progressive Web App
+- `/home`, Página principal, sólo se puede acceder después de estar validado. Se pueden ver hasta 8 proyectos, si hay más aparecerá un componente de paginación que permite acceder a otras páginas.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- `/users/:id` Si el usuario es el autorizaso podrá editar sus datos o eliminar al usuario. Si no, sólo verá los datos del otro usuario.
 
-### Advanced Configuration
+- `/proyect/create` Formulario para la creación de un nuevo proyecto.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- `/proyect/:id` Si le usuario es dueño del proyecto, podrá editar sus datos. Si no podrá verlos y decidir colaborar con el proyecto.
 
-### Deployment
+### Running the frontend project
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- `npm run start` — Para iniciar el servidor.
 
-### `npm run build` fails to minify
+- `npm run build` — Para crear el build.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<!-- ## Backend directories
+
+El backend está alojado en https://api.julianrb-around.students.nomoredomainssbs.ru/
+
+- POST `/users` - toma en el body de request un JSON con un campo "name" que lleva el nombre del usuario y un campo "about" que lleva información de éste, ambos requeridos, de entre 2 y 30 caracteres, para generar un nuevo usuario.
+
+- PATCH `/users/me` - toma en el body de request un JSON con un campo "name" que lleva el nombre del usuario y un campo "about" que lleva información de éste, ambos requeridos, de entre 2 y 30 caracteres, para cambiar el usuario actual.
+
+- GET `/cards` - regresa un JSON con un array con varias cartas.
+
+- POST `/cards` - toma en el body de request un JSON con un campo "name" que lleva el nombre de la tarjeta y un campo "link" que lleva un link a una imagen, ambos requeridos. Con esta data genera una nueva tarjeta.
+
+- DELETE `/cards/:cardId` - elimina una tarjeta a partir de la ID insertada.
+
+- PUT `/cards/:cardId/likes` - agrega el usuario actual a un array de likes dentro de la tarjeta definida por el ID.
+
+- DELETE `/cards/:cardID/likes` - elimina el usuario actual a un array de likes dentro de la tarjeta definida por el ID. -->
+
+### Running the backend project
+
+El backend está corriendo constantemente gracias a pm2.
+Si fuera necesario reiniciarlo se usa: pm2 restar app.
+
+## Tech
+
+Se usan las siguientes tecnologías:
+
+```sh
+- HTML - Marcado que da estructura a la página, está dentro del marcado jsx de React.
+- CSS - Da estílo a React y a HTML.
+- JavaScript - Lenguaje base de React y de todo el proyecto.
+- React - Biblioteca de JavaScript para vincularse con el HTML.
+- Node.js - Framework de JavaScript que permite la creación del backend.
+- Express - Framework de Node.js.
+- MongoDB - Base de datos no relacional.
+- Mongoose - Vincula a MongoDB con Node.js.
+- Git - Sistema de control.
+- GoogleCloud - Espacio virtual donde se almacena el servidor.
+- NGINX - Proxy inverso para gestionar los puertos del servidor.
+- pm2 - Gestionador de procesos que mantiene la app en línea de forma perpetua.
+- Ubuntu 20.04 - Sistema operativo en el que está alojado el servidor.
+```

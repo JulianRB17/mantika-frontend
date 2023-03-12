@@ -689,8 +689,8 @@ function App() {
                         name: 'password',
                         type: 'password',
                         title: text.password,
-                        // pattern:
-                        //   '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
+                        pattern:
+                          '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
                         errorMessage: text.passwordErrorMessage,
                         onChange: handleLoginChange,
                       },
