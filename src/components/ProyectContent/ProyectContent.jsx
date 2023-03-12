@@ -4,6 +4,7 @@ import { CurrentUserContext } from '../../contexts/CurrentUserContext';
 import defaultImg from '../../images/default.jpg';
 import { TextContext } from './../../contexts/TextContext';
 import api from '../../utils/api';
+import ContentInput from './../ContentInput/ContentInput';
 
 export default function UserContent(props) {
   const currentUser = React.useContext(CurrentUserContext);
@@ -19,6 +20,7 @@ export default function UserContent(props) {
   const { id } = useParams();
   const [isMine, setIsMine] = React.useState(false);
   const [data, setData] = React.useState('');
+  const [isValidForm, setValidForm] = React.useState(false);
 
   React.useEffect(() => {
     (async function () {
@@ -48,111 +50,27 @@ export default function UserContent(props) {
     openPopupWithConfirmation();
   };
 
-  function valuesRenderer(element) {
-    const { name } = element;
-    if (name === 'colaborators' && data[name]) {
-      return `${data[name].length} proyectos`;
-    }
-    if (data[name]) {
-      return data[name];
-    }
-    return '-';
-  }
-
-  function btnRenderer() {
-    if (isMine) {
-      return (
-        <button className="proyect-content__submit-btn" onClick={handleEdit}>
-          {text.editBtn}
-        </button>
-      );
+  function handleChange(e) {
+    const form = e.target.form;
+    if (form.checkValidity() === true) {
+      setValidForm(true);
     } else {
-      return (
-        <button
-          className="proyect-content__submit-btn"
-          onClick={handleColaborate}
-        >
-          {text.colaborateBtn}
-        </button>
-      );
+      setValidForm(false);
     }
   }
 
-  function disciplineRenderer(element) {
-    const { onChange } = element;
-    return (
-      <select
-        required
-        className="proyect-content__input proyect-content__info-value"
-        name="discipline"
-        key={elements.indexOf(element)}
-        onChange={onChange}
-        defaultValue={data.discipline}
-        placeholder={data.discipline}
-      >
-        {disciplines.map((discipline) => {
-          return (
-            <option value={discipline} key={disciplines.indexOf(discipline)}>
-              {discipline}
-            </option>
-          );
-        })}
-      </select>
-    );
-  }
-  function largeInputRenderer(element) {
-    const { name, modifier, onChange } = element;
-    return (
-      <textarea
-        className={`proyect-content__info-value proyect-content__input ${
-          modifier || ''
-        }`}
-        placeholder={data[name]}
-        onChange={onChange}
-        name={name}
-      />
-    );
-  }
-
-  const inputRenderer = function (element) {
-    const { name, modifier, onChange } = element;
-    return (
-      <input
-        className={`proyect-content__info-value proyect-content__input ${
-          modifier || ''
-        }`}
-        placeholder={data[name]}
-        onChange={onChange}
-        name={name}
-      />
-    );
-  };
-
-  function paragraphRenderer(element) {
-    const { modifier } = element;
-    return (
-      <p className={`proyect-content__info-value ${modifier || ''}`}>
-        {valuesRenderer(element)}
-      </p>
-    );
-  }
-
-  function elementRenderer(element) {
-    const { isInput, isLarge, name } = element;
-    if (isMine && isInput && isLarge) {
-      return largeInputRenderer(element);
-    }
-    if (isMine && isInput) {
-      return inputRenderer(element);
-    }
-    if (name === 'discipline' && isMine) {
-      return disciplineRenderer(element);
-    } else {
-      return paragraphRenderer(element);
+  function btnClassName() {
+    if (isMine && !isValidForm) {
+      return 'proyect-content__submit-btn_inactive';
     }
   }
+
   return (
-    <form className="proyect-content">
+    <form
+      className="proyect-content"
+      onSubmit={isMine ? handleEdit : handleColaborate}
+      onChange={handleChange}
+    >
       <button
         className={`proyect-content__trash-btn ${isMine || 'hidden'}`}
         onClick={handleDelete}
@@ -168,15 +86,26 @@ export default function UserContent(props) {
           return (
             <div
               className="proyect-content__info-element"
-              key={elements.indexOf(element)}
+              key={'ProyectContent' + element.name}
             >
               <h2 className="proyect-content__info-key">{title}</h2>
-              {elementRenderer(element)}
+              <ContentInput
+                inputData={element}
+                disciplines={disciplines}
+                isMine={isMine}
+                currentData={data}
+              />
             </div>
           );
         })}
       </div>
-      {btnRenderer()}
+      <button
+        className={`proyect-content__submit-btn ${btnClassName()}`}
+        type="submit"
+        disabled={isMine ? !isValidForm : false}
+      >
+        {isMine ? text.editBtn : text.colaborateBtn}
+      </button>
     </form>
   );
 }

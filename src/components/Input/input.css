@@ -2,7 +2,7 @@
   background-color: aliceblue;
   border-radius: 5px;
   width: 75%;
-  margin: 0 auto 10px;
+  margin: 5px auto 10px;
   height: 25px;
   position: relative;
 }
@@ -13,7 +13,7 @@
 }
 
 .input:focus {
-  outline: 2px double #32a1ce;
+  outline: 2px groove #32a1ce;
 }
 
 .input_large {

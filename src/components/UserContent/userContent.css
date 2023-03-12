@@ -88,6 +88,11 @@
   width: 40%;
 }
 
+.user-content__submit-btn_inactive {
+  background-color: gray;
+  cursor: default;
+}
+
 .user-content__trash-btn {
   width: 30px;
   height: 35px;

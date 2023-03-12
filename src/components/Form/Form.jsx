@@ -3,7 +3,6 @@ import Input from '../Input/Input';
 
 export default function Form(props) {
   const { formName, inputs, submitText, onSubmit, disciplines } = props;
-  const [validatedInputs, setValidatedInputs] = React.useState([]);
   const [isValidForm, setValidForm] = React.useState(false);
 
   function handleSubmit(e) {
@@ -30,8 +29,6 @@ export default function Form(props) {
             inputData={input}
             disciplines={disciplines}
             key={formName + input.name}
-            onValidatedInputs={setValidatedInputs}
-            validatedInputs={validatedInputs}
           />
         );
       })}

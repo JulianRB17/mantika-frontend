@@ -31,7 +31,7 @@ import modelImg from '../../images/woman-model.jpg';
 
 function App() {
   const { useState } = React;
-  const [isPopupOpen, setPopupOpen] = useState(true);
+  const [isPopupOpen, setPopupOpen] = useState(false);
   const [jwt, setJwt] = useState('');
   const [isAuthorized, setAuthorized] = useState(false);
   const [searchInput, setSearchInput] = useState('');
@@ -142,7 +142,7 @@ function App() {
         setJwt(data.token);
         navigate('/home', { replace: true });
         setAuthorized(true);
-        handleSuccess();
+        setLoading(false);
       } else {
         throw new Error('Algo salió mal');
       }
@@ -159,7 +159,7 @@ function App() {
         localStorage.setItem('jwt', data.token);
         navigate('/home', { replace: true });
         setAuthorized(true);
-        handleSuccess();
+        setLoading(false);
       } else {
         throw new Error('Algo salió mal');
       }
@@ -409,27 +409,37 @@ function App() {
               <UserContent
                 elements={[
                   {
-                    title: text.username,
                     name: 'username',
+                    type: 'text',
+                    title: text.username,
+                    errorMessage: text.usernameErrorMessage,
+                    pattern: '[^<>]{3,20}',
                     isInput: true,
                     onChange: handleUpdateUserChange,
                   },
                   {
+                    name: 'discipline',
+                    type: 'discipline',
                     title: text.discipline,
-                    name: 'discipline',
-                    name: 'discipline',
+                    errorMessage: text.disciplineErrorMessage,
+                    pattern: '[^-]',
                     onChange: handleUpdateUserChange,
                   },
                   {
                     name: 'profilePic',
+                    type: 'url',
                     isInput: true,
                     title: text.proyectImage,
+                    errorMessage: text.proyectPicErrorMessage,
                     onChange: handleUpdateUserChange,
                   },
                   {
-                    title: text.description,
                     name: 'description',
+                    type: 'text',
                     modifier: 'user-content__input_large',
+                    title: text.description,
+                    pattern: '[^<>]{9,200}',
+                    errorMessage: text.descriptionErrorMessage,
                     isInput: true,
                     isLarge: true,
                     onChange: handleUpdateUserChange,
@@ -438,6 +448,9 @@ function App() {
                     title: text.city,
                     name: 'city',
                     isInput: true,
+                    errorMessage: text.cityErrorMessage,
+                    pattern: '[^<>]{3,20}',
+                    type: 'text',
                     onChange: handleUpdateUserChange,
                   },
                   {
@@ -522,35 +535,47 @@ function App() {
               <ProyectContent
                 elements={[
                   {
-                    title: text.proyect,
                     name: 'proyectName',
+                    type: 'text',
+                    title: text.proyect,
+                    errorMessage: text.proyectNameErrorMessage,
+                    pattern: '[^<>]{3,20}',
                     isInput: true,
                     onChange: handleUpdateProyectChange,
                   },
                   {
                     name: 'proyectPic',
+                    type: 'url',
                     isInput: true,
                     title: text.proyectImage,
+                    errorMessage: text.proyectPicErrorMessage,
                     onChange: handleUpdateProyectChange,
                   },
                   {
                     name: 'discipline',
                     title: text.discipline,
+                    errorMessage: text.disciplineErrorMessage,
+                    pattern: '[^-]',
                     onChange: handleUpdateProyectChange,
                   },
                   {
-                    title: text.description,
                     name: 'description',
-                    modifier: 'user-content__input_large',
-                    onChange: handleUpdateProyectChange,
+                    title: text.description,
+                    type: 'text',
+                    modifier: 'content-input__large',
                     isLarge: true,
                     isInput: true,
+                    pattern: '[^<>]{9,200}',
+                    onChange: handleUpdateProyectChange,
                   },
                   {
-                    title: text.city,
                     name: 'city',
-                    onChange: handleUpdateProyectChange,
+                    type: 'text',
+                    title: text.city,
+                    errorMessage: text.cityErrorMessage,
                     isInput: true,
+                    pattern: '[^<>]{3,20}',
+                    onChange: handleUpdateProyectChange,
                   },
                   {
                     title: text.colaborators,
@@ -664,8 +689,8 @@ function App() {
                         name: 'password',
                         type: 'password',
                         title: text.password,
-                        pattern:
-                          '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
+                        // pattern:
+                        //   '^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,20}$',
                         errorMessage: text.passwordErrorMessage,
                         onChange: handleLoginChange,
                       },
