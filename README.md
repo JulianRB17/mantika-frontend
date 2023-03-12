@@ -62,23 +62,41 @@ Se puede acceder a través de https://www.julianrb-around.students.nomoredomains
 
 - `npm run build` — Para crear el build.
 
-<!-- ## Backend directories
+## Backend directories
 
 El backend está alojado en https://api.julianrb-around.students.nomoredomainssbs.ru/
 
-- POST `/users` - toma en el body de request un JSON con un campo "name" que lleva el nombre del usuario y un campo "about" que lleva información de éste, ambos requeridos, de entre 2 y 30 caracteres, para generar un nuevo usuario.
+- POST `/signup` - toma en el body de request un JSON con los campos que generarán un nuevo usuario: email, username, password, description, city, discipline y profilePic todos requeridos.
 
-- PATCH `/users/me` - toma en el body de request un JSON con un campo "name" que lleva el nombre del usuario y un campo "about" que lleva información de éste, ambos requeridos, de entre 2 y 30 caracteres, para cambiar el usuario actual.
+- POST `/login` - para la autorización se usa un email válido, éste busca a su par en la base de datos y luego compara las contraseñas. Si ambos campos son válidos, devuelve un token.
 
-- GET `/cards` - regresa un JSON con un array con varias cartas.
+- GET `/proyects` - devuelve un array con todos los proyectos generados.
 
-- POST `/cards` - toma en el body de request un JSON con un campo "name" que lleva el nombre de la tarjeta y un campo "link" que lleva un link a una imagen, ambos requeridos. Con esta data genera una nueva tarjeta.
+- POST `/proyects` - toma en el body de request un JSON con los campos proyectName, proyectPic, city, description y discipline, todos requeridos, para crear un nuevo proyecto. proyectPic debe ser una URL. Toma el id del usuario que la está generando para crear el campo owner.
 
-- DELETE `/cards/:cardId` - elimina una tarjeta a partir de la ID insertada.
+- GET `/proyects/created` - regresa un array con todos los proyectos creados por el usuario.
 
-- PUT `/cards/:cardId/likes` - agrega el usuario actual a un array de likes dentro de la tarjeta definida por el ID.
+- GET `/proyects/:id` - regresa la data de un proyecto específico.
 
-- DELETE `/cards/:cardID/likes` - elimina el usuario actual a un array de likes dentro de la tarjeta definida por el ID. -->
+- DELETE `/proyects/:id` - elimina un proyecto siempre y cuando el usuario que lo creó sea el mismo que lo está solicitando.
+
+- PATCH `/proyects/:id`- edita un proyecto siempre que el usuario que solicite esta acción sea el que lo creó.
+
+- PATCH `/proyects/colaborate/:id`- almacena en el proyecto el id del usuario que quiera colaborar en éste.
+
+- GET `/users` - devuelve un array con todos los usuarios registrados.
+
+- GET `/users/me` - devuelve la data del usuario que la está solicitando.
+
+- GET `/users/:id` - devuelve la información de un usuario específico.
+
+- PATCH `/users/:id`- edita un usuario siempre que el usuario que solicite esta acción sea el que lo creó.
+
+- PATCH `/users/colaborate`- toma en el body el id de un proyecto y lo almacena en el usuario.
+
+- PATCH `/users/create`- almacena en el usuario el id de un proyecto que éste crea.
+
+- DELETE `/users/:id` - borra a un usuario siempre y cuando éste sea el que lo está solicitando.
 
 ### Running the backend project
 
