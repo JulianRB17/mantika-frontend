@@ -170,6 +170,7 @@ class TanslationApi {
   }
 }
 
-export default new TanslationApi();
+const translationApi = new TanslationApi();
+export { translationApi };
 
 // 'https://rapidapi.com/haizibinbin-owyntKc0a48/api/ai-translate/details'

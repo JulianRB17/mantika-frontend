@@ -10,7 +10,7 @@ import Main from '../Main/Main';
 import BackgroundImg from '../BackgroundImg/BackgroundImg';
 import Preloader from '../Preloader/Preloader';
 import './app.css';
-import translationApi from '../../utils/translationApi';
+import { translationApi } from '../../utils/translationApi';
 import api from '../../utils/api';
 import { register, authorize, checkToken } from '../../utils/auth';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
