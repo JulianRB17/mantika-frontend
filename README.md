@@ -2,7 +2,7 @@
 
 ## API creada para el proyecto final del bootcamp en web development Practicum de Yandex.
 
-Se puede revisar la página en el siguiente [dominio](https://www.julianrb-around.students.nomoredomainssbs.ru/).
+Se puede revisar la página en el siguiente [dominio](http://34.83.49.232:3000/).
 
 El frontend de esta API fue desarrollado usando la biblioteca de JavaScript: React, el backend usa Node.js con el framework Express además de MongoDB como base de datos no relacional.
 
