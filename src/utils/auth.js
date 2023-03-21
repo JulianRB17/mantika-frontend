@@ -1,4 +1,4 @@
-const baseUrl = 'http://34.83.49.232:3001/';
+const baseUrl = 'http://127.0.0.1:3001/';
 
 const register = async function ({ username, email, password, discipline }) {
   try {

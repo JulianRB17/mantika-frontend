@@ -1,6 +1,6 @@
 class Api {
   constructor() {
-    this._baseUrl = 'http://34.83.49.232:3001/';
+    this._baseUrl = 'http://127.0.0.1:3001/';
     this._options = {
       headers: {
         'Content-Type': 'application/json',
