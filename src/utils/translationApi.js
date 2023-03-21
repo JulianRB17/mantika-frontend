@@ -133,7 +133,7 @@ class TanslationApi {
 
   async _getApiKey() {
     try {
-      const res = await fetch('http://127.0.0.1:3001/apikey');
+      const res = await fetch('http://34.83.49.232:3001/apikey');
       const data = await res.json();
       this._options.headers['X-RapidAPI-Key'] = data.API_KEY;
     } catch (err) {
@@ -172,5 +172,3 @@ class TanslationApi {
 
 const translationApi = new TanslationApi();
 export { translationApi };
-
-// 'https://rapidapi.com/haizibinbin-owyntKc0a48/api/ai-translate/details'
