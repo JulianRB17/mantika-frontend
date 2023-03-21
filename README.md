@@ -20,7 +20,7 @@ Para usar la web app se requiere una autorización.
 
 - Tanto en '/login' como en '/register' el ingreso correcto almacenará un token en el local storage del navegador, éste tendrá una validez de 7 días.
 
-- Junto al logotipo de Mantika, del lado izquierdo de la barra de navegación, habrá dos botones: EN y ES, el botón EN conectará a una API con una inteligencia artificial que permitirá traducir los elementos de texto escritos en la página al idioma inglés. Esta información se almacenará por lo que la llamada a la API sólo se realizará una vez cada que la página se recarga, por esto las siguientes veces que el botón se toque se cargará rapidamente el nuevo lenguaje. El botón ES regresará al español.
+- Junto al logotipo de Mantika, del lado izquierdo de la barra de navegación, habrá dos botones: EN y ES, el botón EN conectará a una API con una inteligencia artificial (ai-translate) que permitirá traducir los elementos de texto escritos en la página al idioma inglés. Esta información se almacenará por lo que la llamada a la API sólo se realizará una vez cada que la página se recarga, por esto las siguientes veces que el botón se toque se cargará rapidamente el nuevo lenguaje. El botón ES regresará al español.
 
 - Después de ser autorizado, el usuario podrá acceder al endpoint '/home', página principal donde del lado izquierdo podemos ver una sidebar con nuestros datos, debajo se encontrará un botón para editar el usuario que nos lleva al endpoint '/users/:id', también habrá otro botón que permitirá ver en la zona central los proyectos creados específicamente por el usuario.
 
@@ -38,7 +38,7 @@ Para usar la web app se requiere una autorización.
 
 ## Frontend endpoints
 
-Se puede acceder a través de https://www.julianrb-around.students.nomoredomainssbs.ru/ o https://julianrb-around.students.nomoredomainssbs.ru/
+Se puede acceder a través de http://34.83.49.232:3000/
 
 - `/landing` - Página inicial si el usuario no ha sido loggeado. Contiene botones a '/register' y a '/login'.
 
@@ -64,7 +64,7 @@ Se puede acceder a través de https://www.julianrb-around.students.nomoredomains
 
 ## Backend directories
 
-El backend está alojado en https://api.julianrb-around.students.nomoredomainssbs.ru/
+El backend está alojado en http://34.83.49.232:3001/
 
 - POST `/signup` - toma en el body de request un JSON con los campos que generarán un nuevo usuario: email, username, password, description, city, discipline y profilePic todos requeridos.
 
