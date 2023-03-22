@@ -1,4 +1,4 @@
-const baseUrl = 'http://34.83.49.232:3001/';
+const baseUrl = 'http://127.0.0.1:3001/';
 
 const register = async function ({ username, email, password, discipline }) {
   try {
@@ -8,7 +8,7 @@ const register = async function ({ username, email, password, discipline }) {
       body: JSON.stringify({ username, email, password, discipline }),
     });
     if (res.status === 400)
-      throw new Error('uno de los campos se rellenó de forma incorrecta ');
+      throw new Error('uno de los campos se rellenó de forma incorrecta');
     else return res.json();
   } catch (err) {
     console.error(err);
@@ -44,11 +44,8 @@ const checkToken = async function (token) {
         Authorization: `Bearer ${token}`,
       },
     });
-    if (res.status === 400)
-      throw new Error(
-        'Token no proporcionado o proporcionado en formato incorrecto'
-      );
-    if (res.status === 401) throw new Error('El token provisto es inválido');
+    if (res.status === 400 || 403 || 401)
+      throw new Error('Token incorrecto o no proporcionado');
     else return res.json();
   } catch (err) {
     console.error(err);
