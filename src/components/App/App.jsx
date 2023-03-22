@@ -86,7 +86,7 @@ function App() {
           } else {
             setAuthorized(false);
             setLoading(false);
-            navigation('/landing', { replace: true });
+            navigation.current('/landing', { replace: true });
           }
         }
       } catch (err) {
